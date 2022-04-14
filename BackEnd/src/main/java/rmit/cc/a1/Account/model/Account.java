@@ -49,13 +49,19 @@ public class Account implements UserDetails {
     @Column(name = "role")
     private UserRole userRole;
 
+    @Column(name = "secret_question")
+    private String secretQuestion;
+
+    @Column(name = "secret_question_answer")
+    private String secretQuestionAnswer;
+
     // Default account is not locked
     @Column(name = "lock_status")
     private Boolean locked = false;
 
     // Default not enabled till email is verified
     @Column(name = "account_enabled")
-    private Boolean enabled = false;
+    private Boolean enabled = true;
 
     @Column(name = "create_At")
     private Date create_At = new Date();
@@ -64,13 +70,14 @@ public class Account implements UserDetails {
     private Date update_At;
 
 
-    public Account(String username, String fullName, String password, UserRole userRole) {
+    public Account(String username, String fullName, String password, UserRole userRole, String secretQuestion, String secretQuestionAnswer) {
         this.username = username;
         this.fullName = fullName;
         this.password = password;
         this.userRole = userRole;
+        this.secretQuestion = secretQuestion;
+        this.secretQuestionAnswer = secretQuestionAnswer;
     }
-
 
     // Setters
     @PrePersist

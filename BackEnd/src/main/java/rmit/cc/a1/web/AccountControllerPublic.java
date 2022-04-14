@@ -12,13 +12,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import rmit.cc.a1.Account.requests.AccountRegisterRequest;
 import rmit.cc.a1.Account.requests.LoginRequest;
-import rmit.cc.a1.Account.requests.ResetPasswordRequest;
 import rmit.cc.a1.Account.services.AccountService;
 import rmit.cc.a1.Account.services.MapValidationErrorService;
-import rmit.cc.a1.Account.services.RegisterService;
 import rmit.cc.a1.Account.validator.AccountRegisterValidator;
 import rmit.cc.a1.Account.validator.LoginValidator;
-import rmit.cc.a1.EmailConfirmation.repository.EmailConfirmTokenRepository;
 import rmit.cc.a1.security.JWTLoginSucessReponse;
 import rmit.cc.a1.security.JwtTokenProvider;
 
@@ -34,8 +31,6 @@ import static rmit.cc.a1.security.SecurityConstant.TOKEN_PREFIX;
 public class AccountControllerPublic {
 
     @Autowired
-    private RegisterService registerService;
-    @Autowired
     private MapValidationErrorService mapValidationErrorService;
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -43,8 +38,6 @@ public class AccountControllerPublic {
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private AccountService accountService;
-    @Autowired
-    private EmailConfirmTokenRepository emailConfirmTokenRepository;
     private AccountRegisterValidator accountRegisterValidator;
     private LoginValidator loginValidator;
 
@@ -55,13 +48,9 @@ public class AccountControllerPublic {
         ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
         if(errorMap != null) return errorMap;
 
-        return new ResponseEntity<>(registerService.register(request), HttpStatus.CREATED);
-    }
+        accountService.registerStudentAccount(request);
 
-    // Sends out email for student to confirm email, then login will be enabled
-    @GetMapping(path = "confirm")
-    public String confirm(@RequestParam("token") String token) {
-        return registerService.confirmEmailToken(token);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 
@@ -85,24 +74,7 @@ public class AccountControllerPublic {
         return ResponseEntity.ok(new JWTLoginSucessReponse(true, jwt));
     }
 
+    //TODO: Reset password using secret question & secret question answer
 
-    // Generates email for user who forgot password, email contains token for password reset
-    @GetMapping(path = "/forgotPassword/sendEmail")
-    public String forgotPassword(@RequestParam(value = "username") String username){
-        return registerService.generateForgotPasswordToken(username);
-    }
-
-
-    // Validates token then allows user to reset password
-    @PutMapping(path = "/forgotPassword/validate")
-    public String resetForgotPassword(@RequestParam("token") String token, @RequestBody ResetPasswordRequest request) {
-        String message = "";
-        if(registerService.validateForgotPasswordToken(token)){
-            String username = emailConfirmTokenRepository.getByToken(token).getAccount().getUsername();
-            message = accountService.changeForgottenPassword(username, request);
-        }
-
-        return message;
-    }
 
 }

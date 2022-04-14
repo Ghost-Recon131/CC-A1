@@ -10,22 +10,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rmit.cc.a1.Account.model.Account;
 import rmit.cc.a1.Account.repository.AccountRepository;
+import rmit.cc.a1.Account.requests.AccountRegisterRequest;
 import rmit.cc.a1.Account.requests.ResetPasswordRequest;
 import rmit.cc.a1.AccountInfo.services.AccountInfoService;
-import rmit.cc.a1.EmailConfirmation.model.EmailConfirmationToken;
-import rmit.cc.a1.EmailConfirmation.services.EmailConfirmationTokenService;
+import rmit.cc.a1.utils.UserRole;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class AccountService implements UserDetailsService {
 
-    @Autowired
     private AccountRepository accountRepository;
-    @Autowired
-    private EmailConfirmationTokenService emailConfirmationTokenService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private AccountInfoService accountInfoService;
 
@@ -35,39 +30,20 @@ public class AccountService implements UserDetailsService {
     }
 
     // Handles creating of new account to database
-    public String registerStudentAccount(Account account) {
+    public void registerStudentAccount(AccountRegisterRequest request) {
 
-        // Checks entered email against database of existing emails
-        if(accountRepository.findByUsername(account.getUsername()) != null){
-            if(accountRepository.findByUsername(account.getUsername()).getUsername().equals(account.getUsername())){
-                throw new IllegalStateException("Email already in use, did you forget your password?");
-            }
-        }
+        Account newAccount = new Account(
+                request.getUsername(),
+                request.getFullName(),
+                bCryptPasswordEncoder.encode(request.getPassword()),
+                UserRole.USER,
+                request.getSecretQuestion(),
+                bCryptPasswordEncoder.encode(request.getSecretQuestionAnswer()));
 
-        String hashedPassword = bCryptPasswordEncoder.encode(account.getPassword());
-        account.setPassword(hashedPassword);
-
-        // Saves student account to database & create student info entry
-        accountRepository.save(account);
-        accountInfoService.createAccountInfoEntry(account);
-
-        String Token = UUID.randomUUID().toString();
-        EmailConfirmationToken token = generateToken(account, Token);
-        emailConfirmationTokenService.saveEmailConfirmToken(token);
-
-        return Token;
+        // Saves  account to database & create account info entry
+        accountRepository.save(newAccount);
+        accountInfoService.createAccountInfoEntry(newAccount);
     }
-
-    // Saves the confirmation token to user
-    public EmailConfirmationToken generateToken(Account account, String Token){
-        return new EmailConfirmationToken(
-                Token,
-                LocalDateTime.now(),
-                LocalDateTime.now().plusHours(24),
-                account
-        );
-    }
-
 
     public String changeForgottenPassword(String username, ResetPasswordRequest request){
         String newPassword = request.getNewPassword();
@@ -86,11 +62,6 @@ public class AccountService implements UserDetailsService {
 
         return status;
     }
-
-    public void enableStudentAccount(String email) {
-       accountRepository.confirmAccountEmail(email);
-    }
-
 
     @Transactional
     public Account loadUserById(Long id){

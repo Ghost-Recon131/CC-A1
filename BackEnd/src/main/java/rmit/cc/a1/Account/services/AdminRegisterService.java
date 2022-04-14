@@ -29,7 +29,8 @@ public class AdminRegisterService {
 
         // Create the new account & input details, then enable the account
         String hashedPassword = bCryptPasswordEncoder.encode(request.getPassword());
-        Account newAdminAccount = new Account(request.getUsername(), request.getFullName(), hashedPassword, UserRole.ADMIN);
+        String hashedSecretQuestionAnswer = bCryptPasswordEncoder.encode(request.getSecretQuestionAnswer());
+        Account newAdminAccount = new Account(request.getUsername(), request.getFullName(), hashedPassword, UserRole.ADMIN, request.getSecretQuestion(), hashedSecretQuestionAnswer);
         newAdminAccount.setEnabled(true);
 
         // Save the new account

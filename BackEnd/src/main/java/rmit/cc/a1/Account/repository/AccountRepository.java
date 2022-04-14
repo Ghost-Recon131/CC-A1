@@ -20,10 +20,4 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @OneToMany
     void deleteById(Long id);
 
-    @Transactional
-    @Modifying
-    @Query("UPDATE Account a " +
-            "SET a.enabled = TRUE WHERE a.username = ?1")
-    void confirmAccountEmail(String email);
-
 }

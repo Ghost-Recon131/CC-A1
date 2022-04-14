@@ -13,4 +13,6 @@ public class AccountRegisterRequest {
     private String fullName;
     private String password;
     private String username;
+    private String secretQuestion;
+    private String secretQuestionAnswer;
 }

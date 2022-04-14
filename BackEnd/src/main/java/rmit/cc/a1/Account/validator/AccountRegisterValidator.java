@@ -6,6 +6,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import rmit.cc.a1.Account.model.Account;
 import rmit.cc.a1.Account.repository.AccountRepository;
+import rmit.cc.a1.Account.requests.AccountRegisterRequest;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class AccountRegisterValidator implements Validator {
     public void validate(Object object, Errors errors) {
         List<Account> ListOfAccounts = accountRepository.findAll();
 
-        Account validateAccount = (Account) object;
+        AccountRegisterRequest validateAccount = (AccountRegisterRequest) object;
 
         for (Account accounts : ListOfAccounts) {
             if (accounts.getUsername().equals(validateAccount.getUsername())) {
