@@ -32,4 +32,10 @@ public class ItemImages {
     @Column(name = "image_link")
     private String imageLink;
 
+    public ItemImages(ItemListing itemListing, String imageName, String imageLink) {
+        this.itemListing = itemListing;
+        this.imageName = imageName;
+        this.imageLink = imageLink;
+    }
+
 }

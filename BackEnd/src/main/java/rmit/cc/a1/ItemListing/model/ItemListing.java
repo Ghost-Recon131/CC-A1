@@ -8,6 +8,7 @@ import rmit.cc.a1.Account.model.Account;
 import rmit.cc.a1.utils.ItemCondition;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -40,5 +41,36 @@ public class ItemListing {
 
     @Column(name = "item_description")
     private String description;
+
+    // Listing not suspended by default
+    @Column(name = "isListingSuspended")
+    private Boolean ListingSuspended = false;
+
+    @Column(name = "create_At")
+    private Date create_At = new Date();
+
+    @Column(name = "update_At")
+    private Date update_At;
+
+    @PrePersist
+    protected void onCreate(){
+        this.create_At = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate(){
+        this.update_At = new Date();
+    }
+
+    public ItemListing(Account account, String listingTitle, Double price, ItemCondition itemCondition, String description, Boolean listingSuspended, Date create_At, Date update_At) {
+        this.account = account;
+        ListingTitle = listingTitle;
+        this.price = price;
+        this.itemCondition = itemCondition;
+        this.description = description;
+        ListingSuspended = listingSuspended;
+        this.create_At = create_At;
+        this.update_At = update_At;
+    }
 
 }
