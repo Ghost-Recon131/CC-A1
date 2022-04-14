@@ -62,15 +62,12 @@ public class ItemListing {
         this.update_At = new Date();
     }
 
-    public ItemListing(Account account, String listingTitle, Double price, ItemCondition itemCondition, String description, Boolean listingSuspended, Date create_At, Date update_At) {
+    public ItemListing(Account account, String listingTitle, Double price, ItemCondition itemCondition, String description) {
         this.account = account;
         ListingTitle = listingTitle;
         this.price = price;
         this.itemCondition = itemCondition;
         this.description = description;
-        ListingSuspended = listingSuspended;
-        this.create_At = create_At;
-        this.update_At = update_At;
     }
 
 }
