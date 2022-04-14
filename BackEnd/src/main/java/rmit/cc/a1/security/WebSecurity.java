@@ -72,21 +72,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         // This allows anyone to access register for student account
         http.authorizeRequests().antMatchers("/api/RegisterLogin/**").permitAll();
 
-        // This allows admins and students to access functions in AccountInfo API
-        http.authorizeRequests().antMatchers("/api/StudentInfo/**").hasAnyAuthority("STUDENT", "ADMIN");
-
         // This only allows for authorised users to use these functions
-        http.authorizeRequests().antMatchers("/api/authorised/**").hasAnyAuthority("STUDENT", "ADMIN");
+        http.authorizeRequests().antMatchers("/api/authorised/**").hasAnyAuthority("USER", "ADMIN");
 
         // This only allows for admins to use admin functions
         http.authorizeRequests().antMatchers("/api/admin/**").hasAuthority("ADMIN");
-
-        // No restrictions on viewing FAQs
-        http.authorizeRequests().antMatchers("/api/FAQ/public/**").permitAll();
-
-        // Restrict adding and modifying FAQ to admin only
-        http.authorizeRequests().antMatchers("/api/FAQ/admin/**").hasAuthority("ADMIN");
-
 
         // Add a filter to validate the tokens with every request
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -42,7 +42,7 @@ public class RegisterService {
                 request.getUsername(),
                 request.getFullName(),
                 request.getPassword(),
-                UserRole.STUDENT
+                UserRole.USER
                 )
         );
 
