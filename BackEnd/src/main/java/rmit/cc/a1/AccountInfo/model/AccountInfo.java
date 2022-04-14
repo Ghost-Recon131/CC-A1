@@ -1,7 +1,5 @@
 package rmit.cc.a1.AccountInfo.model;
 
-
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,39 +24,23 @@ public class AccountInfo {
 
     // Forign key to join tables
     @ManyToOne
-    @JoinColumn(nullable = false, name = "student_user_id")
+    @JoinColumn(nullable = false, name = "account_id")
     private Account account;
-
-    @Column(name = "gender")
-    private String gender;
-
-    @Column(name = "nationality")
-    private String nationality;
 
     @Column(name = "dob")
     private String dob;
 
     @Column(name = "phone")
-    private Long phone;
+    private String phone;
 
-    @Column(name = "university")
-    private String university;
+    @Column(name = "address")
+    private String address;
 
-    @Column(name = "uniLevel")
-    private String uniLevel;
-
-    @Column(name = "field")
-    private String field;
-
-    public AccountInfo(Account account, String gender, String nationality, String dob, Long phone, String university, String uniLevel, String field) {
+    public AccountInfo(Account account, String dob, String phone, String address) {
         this.account = account;
-        this.gender = gender;
-        this.nationality = nationality;
         this.dob = dob;
         this.phone = phone;
-        this.university = university;
-        this.uniLevel = uniLevel;
-        this.field = field;
+        this.address = address;
     }
 
 }

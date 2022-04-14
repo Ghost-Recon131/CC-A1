@@ -20,27 +20,29 @@ public class AccountInfoService {
     // Takes a PUT request and updates the student's info
     public void updateAccountInfo(Long ID, AccountInfoRequest updateRequest){
         AccountInfo existingAccountInfo = AccountInfoRepository.getById(ID);
-        existingAccountInfo.setGender(updateRequest.getGender());
-        existingAccountInfo.setNationality(updateRequest.getNationality());
-        existingAccountInfo.setDob(updateRequest.getDob());
-        existingAccountInfo.setPhone(updateRequest.getPhone());
-        existingAccountInfo.setUniversity(updateRequest.getUniversity());
-        existingAccountInfo.setUniLevel(updateRequest.getUniLevel());
-        existingAccountInfo.setField(updateRequest.getField());
+
+        if(updateRequest.getAddress() != null){
+            existingAccountInfo.setAddress(updateRequest.getAddress());
+        }
+
+        if(updateRequest.getDob() != null){
+            existingAccountInfo.setDob(updateRequest.getDob());
+        }
+
+        if(updateRequest.getPhone() != null){
+            existingAccountInfo.setPhone(updateRequest.getPhone());
+        }
+
         AccountInfoRepository.save(existingAccountInfo);
     }
 
     // Generate new student info line in database
     public void createAccountInfoEntry(Account account){
-        String gender = null;
-        String nationality = null;
+        String address = null;
         String dob = null;
-        Long phone = null;
-        String university = null;
-        String uniLevel = null;
-        String field = null;
+        String phone = null;
 
-        AccountInfo BlankAccountInfo = new AccountInfo(account, gender, nationality, dob, phone, university, uniLevel, field);
+        AccountInfo BlankAccountInfo = new AccountInfo(account, address, dob, phone);
         AccountInfoRepository.save(BlankAccountInfo);
     }
 
