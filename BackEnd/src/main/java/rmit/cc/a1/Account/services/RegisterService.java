@@ -111,7 +111,6 @@ public class RegisterService {
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
             isTokenValid = false;
-            throw new IllegalStateException("token expired");
         }else{
             isTokenValid = true;
         }

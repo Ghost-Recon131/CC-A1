@@ -14,7 +14,7 @@ import javax.persistence.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @Entity
-@Table(name = "Student_Info")
+@Table(name = "account_info")
 public class AccountInfo {
 
     @Id
@@ -23,8 +23,8 @@ public class AccountInfo {
     private long id;
 
     // Forign key to join tables
-    @ManyToOne
-    @JoinColumn(nullable = false, name = "account_id")
+    @OneToOne
+    @JoinColumn(nullable = false, name = "account")
     private Account account;
 
     @Column(name = "dob")
