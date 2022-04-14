@@ -1,14 +1,15 @@
-package rmit.cc.a1.Account.validator;
+package rmit.cc.a1.ItemListing.validator;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import rmit.cc.a1.Account.model.Account;
+import rmit.cc.a1.ItemListing.model.ItemListing;
 
 @Component
 @AllArgsConstructor
-public class LoginValidator implements Validator {
+public class ItemListingAllowedValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> aClass) {
@@ -17,11 +18,13 @@ public class LoginValidator implements Validator {
 
     @Override
     public void validate(Object object, Errors errors) {
-        Account loginRequest = (Account) object;
 
-        if (!loginRequest.getEnabled()) {
-            errors.rejectValue("Account", "Status", "Account not enabled or suspended, please check your confirmation email or contact admin");
+        ItemListing itemListing = (ItemListing) object;
+
+        if (itemListing.getListingSuspended()){
+            errors.rejectValue("ItemListing", "isListingSuspended", "Listing has been suspended by admin, contact admin for more info");
         }
+
     }
 
 }
