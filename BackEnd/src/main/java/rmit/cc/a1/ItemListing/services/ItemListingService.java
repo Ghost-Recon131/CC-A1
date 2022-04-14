@@ -34,7 +34,24 @@ public class ItemListingService {
     }
 
     // TODO
-    public void updateItemListingDetails(NewItemListingRequest request){
+    public void updateItemListingDetails(Long id, NewItemListingRequest request){
+        ItemListing toUpdate = itemListingRepository.getById(id);
+
+        if(request.getListingTitle() != null){
+            toUpdate.setListingTitle(request.getListingTitle());
+        }
+
+        if(request.getPrice() != null){
+            toUpdate.setPrice(request.getPrice());
+        }
+
+        if(request.getItemCondition() != null){
+            toUpdate.setItemCondition(request.getItemCondition());
+        }
+
+        if(request.getDescription() != null){
+            toUpdate.setDescription(request.getDescription());
+        }
 
     }
 
