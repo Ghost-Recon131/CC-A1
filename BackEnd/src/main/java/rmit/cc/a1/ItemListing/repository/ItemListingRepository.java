@@ -10,11 +10,13 @@ import java.util.List;
 @Repository
 public interface ItemListingRepository extends JpaRepository<ItemListing, Long> {
 
+    List<ItemListing> findAll();
+
     ItemListing getById(Long id);
 
     // Get all listings for a user
     @Query("SELECT a FROM ItemListing a WHERE a.account = ?1")
-    List<ItemListing> findByUserId(Long id);
+    List<ItemListing> findAllByUserId(Long id);
 
     // Delete a listing
     void deleteById(Long id);
