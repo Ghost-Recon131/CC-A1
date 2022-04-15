@@ -14,6 +14,7 @@ import rmit.cc.a1.Account.validator.LoginValidator;
 import rmit.cc.a1.utils.VerifyAdminUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -37,6 +38,12 @@ public class AdminAccountController {
         adminRegisterService.registerAdminAccount(request);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    // Get list of all users
+    @GetMapping(path = "admin/getAllUsers")
+    public List<Account> getAllUsers(){
+        return accountRepository.findAll();
     }
 
     // Suspend a user

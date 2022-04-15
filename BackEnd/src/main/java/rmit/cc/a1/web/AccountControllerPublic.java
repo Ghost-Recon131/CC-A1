@@ -39,7 +39,7 @@ public class AccountControllerPublic {
     private LoginValidator loginValidator;
     private ResetPasswordValidator resetPasswordValidator;
 
-    // Registers a new student account
+    // Registers a new account
     @PostMapping
     public ResponseEntity<?> register(@Valid @RequestBody AccountRegisterRequest request, BindingResult result){
         accountRegisterValidator.validate(request, result);

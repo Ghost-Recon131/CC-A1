@@ -54,14 +54,16 @@ public class ItemListingController {
     }
 
     // TODO: Adds images to item listing
-    @PostMapping(path = "/addImageToListing{id}")
+    @PostMapping(path = "/addImageToListing/{id}")
     public ResponseEntity<?>addImageToListing(@PathVariable(value = "id") Long id, HttpServletRequest request, BindingResult result) {
+
+        // TODO: Adds images to item listing
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     // Modify item listing details
-    @PutMapping(path = "/modifyItemListing")
+    @PutMapping(path = "/modifyItemListing/{id}")
     public ResponseEntity<?>modifyItemListing(@PathVariable(value = "id") Long id, HttpServletRequest request, BindingResult result, @RequestBody NewItemListingRequest listingRequest){
         Account currentUser = getUserByJWTUtil.getUserIdByJWT(request);
 
