@@ -1,0 +1,2 @@
+- env variables
+- global state
