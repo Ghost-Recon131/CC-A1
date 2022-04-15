@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import rmit.cc.a1.Account.model.Account;
+import rmit.cc.a1.Account.repository.AccountRepository;
 import rmit.cc.a1.Account.requests.AccountRegisterRequest;
 import rmit.cc.a1.Account.requests.LoginRequest;
 import rmit.cc.a1.Account.requests.ResetPasswordRequest;
@@ -23,6 +25,7 @@ import rmit.cc.a1.security.JwtTokenProvider;
 
 import javax.validation.Valid;
 
+import static rmit.cc.a1.security.SecurityConstant.HEADER_STRING;
 import static rmit.cc.a1.security.SecurityConstant.TOKEN_PREFIX;
 
 @RestController
@@ -38,6 +41,7 @@ public class AccountControllerPublic {
     private AccountRegisterValidator accountRegisterValidator;
     private LoginValidator loginValidator;
     private ResetPasswordValidator resetPasswordValidator;
+    private AccountRepository accountRepository;
 
     // Registers a new account
     @PostMapping
@@ -68,7 +72,6 @@ public class AccountControllerPublic {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = TOKEN_PREFIX +  jwtTokenProvider.generateToken(authentication);
-
         return ResponseEntity.ok(new JWTLoginSucessReponse(true, jwt));
     }
 

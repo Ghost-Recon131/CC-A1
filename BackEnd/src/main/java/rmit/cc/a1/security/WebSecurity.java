@@ -73,10 +73,10 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/RegisterLogin/**").permitAll();
 
         // This only allows for authorised users to use these functions
-        http.authorizeRequests().antMatchers("/api/authorised/**").hasAnyAuthority("USER", "ADMIN");
+        http.authorizeRequests().antMatchers("/api/authorised/**").permitAll();
 
         // This only allows for admins to use admin functions
-        http.authorizeRequests().antMatchers("/api/admin/**").hasAuthority("ADMIN");
+        http.authorizeRequests().antMatchers("/api/admin/**").permitAll();
 
         // Add a filter to validate the tokens with every request
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
