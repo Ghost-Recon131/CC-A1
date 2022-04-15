@@ -4,6 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { render } from "react-dom";
 import Home from "components/general/home";
 import SignIn from "components/general/signin";
+import Register from "components/general/register";
+import ForgotPassword from "components/general/forgotpassword";
 import NavBar from "components/general/navbar";
 import Footer from "components/general/footer";
 
@@ -14,6 +16,8 @@ render(
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/register" element={<Register />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
       </Routes>
       <Footer />
     </BrowserRouter>

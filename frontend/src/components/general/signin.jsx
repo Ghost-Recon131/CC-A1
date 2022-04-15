@@ -1,11 +1,17 @@
 import { getGlobalState, setGlobalState } from "utils/globalState";
 import axios from "axios";
 import { useState } from "react";
+import cookie from 'js-cookie'
+import {
+  useNavigate,
+} from 'react-router-dom';
+
 
 export default function Component() {
-  var [formData, setFormData] = useState({ email: "", password: "" });
+  var [formData, setFormData] = useState({ username: "", password: "" });
   var { username, password } = formData;
   var [error, setError] = useState("");
+  const navigate = useNavigate();
 
   function formInputs(event) {
     event.preventDefault();
@@ -15,16 +21,27 @@ export default function Component() {
 
   async function submit(event) {
     event.preventDefault();
+    console.log(JSON.stringify(formData))
     try {
       var res = await axios.post(
         getGlobalState("backendDomain") + "/api/RegisterLogin/login",
         formData
       );
-      if(res.data.success === true){
-        setGlobalState("jwt", res.data.token)
-      }
       console.log(JSON.stringify(res.data));
-    } catch (resError) {}
+      if(res.data.error){
+        setError(res.data.error)
+        return
+      }
+      if(res.data.success === true){
+        cookie.set('jwt', res.data.token, {
+          // 7 days
+          expires: 7,
+        })
+      }
+      navigate('/')
+    } catch (resError) {
+      setError(resError.response.data.error)
+    }
   }
 
   return (
@@ -69,7 +86,7 @@ export default function Component() {
           Sign In
         </button>
       </div>
-      <h1 className="text-red-500">{error}</h1>
+      <h1 className="mt-5 text-red-500">{error}</h1>
     </form>
   );
 }
