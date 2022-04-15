@@ -1,12 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
+import React from "react";
+import "index.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { render } from "react-dom";
+import Home from "components/general/home";
+import SignIn from "components/general/signin";
+import NavBar from "components/general/navbar";
+import Footer from "components/general/footer";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+render(
+  <div className="bg-black text-white px-10">
+    <BrowserRouter>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signin" element={<SignIn />} />
+      </Routes>
+      <Footer />
+    </BrowserRouter>
+  </div>,
+  document.getElementById("root")
 );
-
