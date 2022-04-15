@@ -15,7 +15,7 @@ public interface ItemListingRepository extends JpaRepository<ItemListing, Long> 
     ItemListing getById(Long id);
 
     // Get all listings for a user
-    @Query("SELECT a FROM ItemListing a WHERE a.account = ?1")
+    @Query("SELECT a FROM ItemListing a WHERE a.accountId = ?1")
     List<ItemListing> findAllByUserId(Long id);
 
     // Delete a listing

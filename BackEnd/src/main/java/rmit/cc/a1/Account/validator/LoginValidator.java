@@ -25,11 +25,16 @@ public class LoginValidator implements Validator {
     public void validate(Object object, Errors errors) {
         LoginRequest loginRequest = (LoginRequest) object;
 
-        Account currentUser = accountRepository.findByUsername(loginRequest.getUsername());
+        try{
+            Account currentUser = accountRepository.findByUsername(loginRequest.getUsername());
+            if (!currentUser.getEnabled()) {
+                errors.rejectValue("Account", "Status", "Account not enabled or suspended, please check your confirmation email or contact admin");
+            }
+        }catch (Exception e){
 
-        if (!currentUser.getEnabled()) {
-            errors.rejectValue("Account", "Status", "Account not enabled or suspended, please check your confirmation email or contact admin");
         }
+
+
     }
 
 }

@@ -24,9 +24,8 @@ public class ItemListing {
     private Long id;
 
     // Foreign key to match who made the listing
-    @JoinColumn(nullable = false, name = "account_id")
-    @ManyToOne
-    private Account account;
+    @Column(name = "account_id")
+    private Long accountId;
 
     // Heading of the listing that user will search for ie "AMD CPU"
     @Column(name = "listing_title")
@@ -62,8 +61,8 @@ public class ItemListing {
         this.update_At = new Date();
     }
 
-    public ItemListing(Account account, String listingTitle, Double price, ItemCondition itemCondition, String description) {
-        this.account = account;
+    public ItemListing(Long accountId, String listingTitle, Double price, ItemCondition itemCondition, String description) {
+        this.accountId = accountId;
         ListingTitle = listingTitle;
         this.price = price;
         this.itemCondition = itemCondition;

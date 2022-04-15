@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import rmit.cc.a1.Account.model.Account;
+import rmit.cc.a1.Account.repository.AccountRepository;
 import rmit.cc.a1.Account.services.MapValidationErrorService;
 import rmit.cc.a1.ItemListing.model.ItemListing;
 import rmit.cc.a1.ItemListing.repository.ItemListingRepository;
@@ -19,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/api/authorised/itemListings")
+@RequestMapping("/api/itemListings")
 @AllArgsConstructor
 public class ItemListingController {
 
@@ -28,14 +29,16 @@ public class ItemListingController {
     private GetUserByJWTUtil getUserByJWTUtil;
     private ItemListingRepository itemListingRepository;
     private ItemListingService itemListingService;
+    private AccountRepository accountRepository;
 
     // Checks item listing
     @PostMapping(path = "/newItemListing")
-    public ResponseEntity<?>newItemListing(HttpServletRequest request, BindingResult result, @RequestBody NewItemListingRequest listingRequest){
-        Account currentUser = getUserByJWTUtil.getUserIdByJWT(request);
+    public ResponseEntity<?>newItemListing(@RequestBody NewItemListingRequest listingRequest, BindingResult result){
+
+        Account currentUser = accountRepository.getById(listingRequest.getId());
 
         ItemListing newItemListing = new ItemListing(
-                currentUser,
+                listingRequest.getId(),
                 listingRequest.getListingTitle(),
                 listingRequest.getPrice(),
                 listingRequest.getItemCondition(),
@@ -67,7 +70,7 @@ public class ItemListingController {
     public ResponseEntity<?>modifyItemListing(@PathVariable(value = "id") Long id, HttpServletRequest request, BindingResult result, @RequestBody NewItemListingRequest listingRequest){
         Account currentUser = getUserByJWTUtil.getUserIdByJWT(request);
 
-        if(currentUser.getId() == itemListingRepository.getById(id).getAccount().getId()){
+        if(currentUser.getId() == itemListingRepository.getById(id).getAccountId()){
             ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
             if(errorMap != null) return errorMap;
 
