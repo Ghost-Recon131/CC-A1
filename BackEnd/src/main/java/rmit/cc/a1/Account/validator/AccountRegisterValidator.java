@@ -18,7 +18,7 @@ public class AccountRegisterValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return Account.class.equals(aClass);
+        return AccountRegisterRequest.class.equals(aClass);
     }
 
     @Override
