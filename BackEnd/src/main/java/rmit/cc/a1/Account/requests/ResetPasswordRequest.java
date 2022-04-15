@@ -10,6 +10,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class ResetPasswordRequest {
+    private String secretQuestion;
+    private String secretQuestionAnswer;
     String newPassword;
     String confirmNewPassword;
 }

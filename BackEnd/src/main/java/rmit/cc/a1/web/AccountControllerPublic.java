@@ -1,7 +1,6 @@
 package rmit.cc.a1.web;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,10 +11,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import rmit.cc.a1.Account.requests.AccountRegisterRequest;
 import rmit.cc.a1.Account.requests.LoginRequest;
+import rmit.cc.a1.Account.requests.ResetPasswordRequest;
 import rmit.cc.a1.Account.services.AccountService;
 import rmit.cc.a1.Account.services.MapValidationErrorService;
 import rmit.cc.a1.Account.validator.AccountRegisterValidator;
 import rmit.cc.a1.Account.validator.LoginValidator;
+import rmit.cc.a1.Account.validator.ResetPasswordValidator;
 import rmit.cc.a1.security.JWTLoginSucessReponse;
 import rmit.cc.a1.security.JwtTokenProvider;
 
@@ -30,16 +31,13 @@ import static rmit.cc.a1.security.SecurityConstant.TOKEN_PREFIX;
 @AllArgsConstructor
 public class AccountControllerPublic {
 
-    @Autowired
     private MapValidationErrorService mapValidationErrorService;
-    @Autowired
     private AuthenticationManager authenticationManager;
-    @Autowired
     private JwtTokenProvider jwtTokenProvider;
-    @Autowired
     private AccountService accountService;
     private AccountRegisterValidator accountRegisterValidator;
     private LoginValidator loginValidator;
+    private ResetPasswordValidator resetPasswordValidator;
 
     // Registers a new student account
     @PostMapping
@@ -74,7 +72,17 @@ public class AccountControllerPublic {
         return ResponseEntity.ok(new JWTLoginSucessReponse(true, jwt));
     }
 
-    //TODO: Reset password using secret question & secret question answer
+    //Reset password using secret question & secret question answer
+    @PostMapping(path = "/resetForgottenPassword")
+    public ResponseEntity<?> resetForgottenPassword(@Valid @RequestBody ResetPasswordRequest ResetPasswordRequest, @RequestParam(value = "username") String username, BindingResult result){
+        resetPasswordValidator.validate(ResetPasswordRequest, result);
+        ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
+        if(errorMap != null) return errorMap;
+
+        accountService.changeForgottenPassword(username, ResetPasswordRequest);
+
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
 
 
 }

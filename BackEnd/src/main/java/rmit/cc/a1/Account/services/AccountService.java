@@ -45,22 +45,13 @@ public class AccountService implements UserDetailsService {
         accountInfoService.createAccountInfoEntry(newAccount);
     }
 
-    public String changeForgottenPassword(String username, ResetPasswordRequest request){
+    public void changeForgottenPassword(String username, ResetPasswordRequest request){
         String newPassword = request.getNewPassword();
-        String confirmPassword = request.getConfirmNewPassword();
 
-        String status = "Password reset failed";
+        Account account = accountRepository.findByUsername(username);
+        account.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        accountRepository.save(account);
 
-        if(newPassword.equals(confirmPassword)){
-            Account account = accountRepository.findByUsername(username);
-            account.setPassword(bCryptPasswordEncoder.encode(newPassword));
-            accountRepository.save(account);
-            status = "Password changed successfuly";
-        }else{
-            throw new IllegalStateException("Entered passwords do not match!");
-        }
-
-        return status;
     }
 
     @Transactional
