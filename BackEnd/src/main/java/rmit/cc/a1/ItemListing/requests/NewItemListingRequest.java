@@ -11,7 +11,7 @@ import rmit.cc.a1.utils.ItemCondition;
 @EqualsAndHashCode
 @ToString
 public class NewItemListingRequest {
-    private Long id;
+    private Long id; // id of the user creating new item listing
     private String ListingTitle;
     private Double price;
     private ItemCondition itemCondition;

@@ -1,12 +1,14 @@
 package rmit.cc.a1.AWSConfig.s3.service;
 
 import lombok.AllArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import rmit.cc.a1.Account.model.Account;
 import rmit.cc.a1.ItemListing.model.ItemImages;
 import rmit.cc.a1.ItemListing.repository.ItemImagesRepository;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -14,6 +16,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,59 +34,48 @@ public class S3Service {
 
     private final Logger logger = LogManager.getLogger(this.getClass());
 
-    // Convert incoming multipart file to a file object
-    private File convertMultiPartFile(MultipartFile multipartFile) {
-        final File newfile = new File(multipartFile.getOriginalFilename());
-        try (final FileOutputStream outputStream = new FileOutputStream(newfile)) {
-            outputStream.write(multipartFile.getBytes());
-        } catch (IOException e) {
-            logger.error("Error {} occurred while converting the multipart file", e.getLocalizedMessage());
-            System.err.println("Error {} occurred while converting the multipart file \n" +  e.getLocalizedMessage());
-            System.err.println(" END OF converting the multipart file error \n");
-        }
-        return newfile;
+    public String getFileExtension(String filename) {
+        return FilenameUtils.getExtension(filename);
     }
-
 
     // Save file to S3
     @Async
-    public void saveImage(final MultipartFile multipartFile, Long imageID, Long listingID, String s3BucketName) {
-        String fileKey = listingID + "-" + imageID;
-        String s3ObjectURL;
+    public String saveImage(MultipartFile multipartFile, String fileName, Long imageID, Long listingID, Account currentUser){
+
+        String s3BucketName = currentUser.getUserRole().toString().toLowerCase() + "-" + currentUser.getId() + "-" + currentUser.getUuid();
+        String s3ObjectURL = null;
+        String fileExtension = getFileExtension(fileName);
+        InputStream fileInput = null;
+        String fileKey = listingID + "-" + imageID + "." + fileExtension;  // This is the key for S3, made ie 1-1
 
         try {
-            final File file = convertMultiPartFile(multipartFile);
-
-            logger.info("Uploading file {}", imageID.toString());
-
-            // This is the key for S3, made ie 1-1
-
-            // Creates request & uploads to S3, uploaded image can be viewed publicly
-            PutObjectRequest putObjectRequest = PutObjectRequest.builder().bucket(s3BucketName).key(fileKey).acl(ObjectCannedACL.PUBLIC_READ).build();
-            amazonS3.putObject(putObjectRequest, RequestBody.fromFile(file));
-
-            Files.delete(file.toPath());  // Remove the file locally created in the project folder
-
-        } catch (IOException e) {
+            fileInput = multipartFile.getInputStream();
+        }
+        catch (Exception e) {
             logger.error("Error while deleting temp file \n" +  e.getLocalizedMessage());
-            System.err.println("Error {} deleting temp file \n" +  e.getLocalizedMessage());
-            System.err.println(" END OF deleting temp file error \n");
-        } catch (Exception e) {
-            logger.error("Error uploading file \n" +  e.getLocalizedMessage());
-            System.err.println("Error uploading file \n" +  e.getLocalizedMessage());
-            System.err.println(" END OF uploading file error \n");
         }
 
+        // Creates request & uploads to S3, uploaded image can be viewed publicly
+        try{
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder().bucket(s3BucketName).key(fileKey).acl(ObjectCannedACL.PUBLIC_READ).build();
+            amazonS3.putObject(putObjectRequest, RequestBody.fromInputStream(fileInput, fileInput.available()));
+        } catch (Exception e) {
+            logger.error("Error uploading file \n" +  e.getLocalizedMessage());
+        }
+
+        // This section gets the file key and sets it as image name, and gets the file s3 url and saves to database
         try{
             s3ObjectURL = amazonS3.utilities().getUrl(builder -> builder.bucket(s3BucketName).key(fileKey)).toExternalForm();
-            ItemImages toUpadate = itemImagesRepository.getById(imageID);
-            toUpadate.setImageLink(s3ObjectURL);
-            itemImagesRepository.save(toUpadate);
+            ItemImages toUpdate = itemImagesRepository.getById(imageID);
+            toUpdate.setImageName(fileKey+fileExtension);
+            toUpdate.setImageLink(s3ObjectURL);
+            itemImagesRepository.save(toUpdate);
         } catch (Exception e){
             logger.error("Error getting S3 URL \n" +  e.getLocalizedMessage());
             System.err.println("Error getting S3 URL \n" +  e.getLocalizedMessage());
         }
 
+        return s3ObjectURL;
     }
 
     // Delete image from S3

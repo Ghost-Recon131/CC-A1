@@ -17,4 +17,7 @@ public interface ItemImagesRepository extends JpaRepository<ItemImages, Long> {
     @Query("SELECT a FROM ItemImages a WHERE a.itemListing = ?1")
     List<ItemImages> findByListingID(ItemListing itemListing);
 
+    @Query("SELECT a FROM ItemImages a WHERE a.tmpImageId = ?1")
+    ItemImages getByTmpId(Integer id);
+
 }

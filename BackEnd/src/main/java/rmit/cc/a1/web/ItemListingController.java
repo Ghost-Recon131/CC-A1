@@ -71,11 +71,12 @@ public class ItemListingController {
 
     // Add images to item listing
     @PostMapping(path = "/addImageToListing/{id}")
-    public ResponseEntity<?>addImageToListing(@PathVariable(value = "id") Long id, MultipartFile multipartFile) {
+    public String addImageToListing(@PathVariable(value = "id") Long id,@RequestParam(value = "userId") Long userId,
+                                    @RequestParam(value = "file") MultipartFile multipartFile, @RequestParam(value = "filename") String filename) {
 
-        itemImagesService.addImageToListing(id, multipartFile);
+        Integer tmpImageId = new Random().nextInt(10000);
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return itemImagesService.addImageToListing(id, userId, multipartFile, filename, tmpImageId);
     }
 
     // Returns image link for a particular item
