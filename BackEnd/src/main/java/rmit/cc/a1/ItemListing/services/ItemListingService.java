@@ -24,7 +24,7 @@ public class ItemListingService {
         return newListingId;
     }
 
-    // TODO
+    // Allows users to update their listing
     public void updateItemListingDetails(Long id, NewItemListingRequest request){
         ItemListing toUpdate = itemListingRepository.getById(id);
 

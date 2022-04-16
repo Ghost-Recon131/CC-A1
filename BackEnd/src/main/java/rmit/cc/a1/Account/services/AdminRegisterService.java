@@ -9,6 +9,8 @@ import rmit.cc.a1.Account.repository.AccountRepository;
 import rmit.cc.a1.Account.requests.AccountRegisterRequest;
 import rmit.cc.a1.utils.UserRole;
 
+import java.util.UUID;
+
 @Service
 @AllArgsConstructor
 public class AdminRegisterService {
@@ -30,7 +32,8 @@ public class AdminRegisterService {
         // Create the new account & input details, then enable the account
         String hashedPassword = bCryptPasswordEncoder.encode(request.getPassword());
         String hashedSecretQuestionAnswer = bCryptPasswordEncoder.encode(request.getSecretQuestionAnswer());
-        Account newAdminAccount = new Account(request.getUsername(), request.getFullName(), hashedPassword, UserRole.ADMIN, request.getSecretQuestion(), hashedSecretQuestionAnswer);
+        UUID uuid = UUID.randomUUID();
+        Account newAdminAccount = new Account(request.getUsername(), request.getFullName(), hashedPassword, UserRole.ADMIN, request.getSecretQuestion(), hashedSecretQuestionAnswer, uuid.toString());
         newAdminAccount.setEnabled(true);
 
         // Save the new account

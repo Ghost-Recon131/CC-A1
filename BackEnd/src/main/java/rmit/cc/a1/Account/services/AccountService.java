@@ -15,6 +15,8 @@ import rmit.cc.a1.Account.requests.ResetPasswordRequest;
 import rmit.cc.a1.AccountInfo.services.AccountInfoService;
 import rmit.cc.a1.utils.UserRole;
 
+import java.util.UUID;
+
 
 @Service
 @AllArgsConstructor
@@ -31,6 +33,7 @@ public class AccountService implements UserDetailsService {
 
     // Handles creating of new account to database
     public void registerStudentAccount(AccountRegisterRequest request) {
+        UUID uuid = UUID.randomUUID();
 
         Account newAccount = new Account(
                 request.getUsername(),
@@ -38,7 +41,9 @@ public class AccountService implements UserDetailsService {
                 bCryptPasswordEncoder.encode(request.getPassword()),
                 UserRole.USER,
                 request.getSecretQuestion(),
-                bCryptPasswordEncoder.encode(request.getSecretQuestionAnswer()));
+                bCryptPasswordEncoder.encode(request.getSecretQuestionAnswer()),
+                uuid.toString()
+        );
 
         // Saves  account to database & create account info entry
         accountRepository.save(newAccount);

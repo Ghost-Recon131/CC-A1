@@ -55,6 +55,9 @@ public class Account implements UserDetails {
     @Column(name = "secret_question_answer")
     private String secretQuestionAnswer;
 
+    @Column(name = "uuid")
+    private String uuid;
+
     // Default account is not locked
     @Column(name = "lock_status")
     private Boolean locked = false;
@@ -70,13 +73,14 @@ public class Account implements UserDetails {
     private Date update_At;
 
 
-    public Account(String username, String fullName, String password, UserRole userRole, String secretQuestion, String secretQuestionAnswer) {
+    public Account(String username, String fullName, String password, UserRole userRole, String secretQuestion, String secretQuestionAnswer, String uuid) {
         this.username = username;
         this.fullName = fullName;
         this.password = password;
         this.userRole = userRole;
         this.secretQuestion = secretQuestion;
         this.secretQuestionAnswer = secretQuestionAnswer;
+        this.uuid = uuid;
     }
 
     // Setters
