@@ -14,51 +14,57 @@ import rmit.cc.a1.ItemListing.requests.NewItemListingRequest;
 import rmit.cc.a1.ItemListing.services.ItemListingService;
 import rmit.cc.a1.ItemListing.util.ItemListingCreateSucessReponse;
 import rmit.cc.a1.ItemListing.validator.ItemListingValidator;
-import rmit.cc.a1.utils.GetUserByJWTUtil;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Random;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/itemListings")
 @AllArgsConstructor
 public class ItemListingController {
-
     private ItemListingValidator itemListingValidator;
     private MapValidationErrorService mapValidationErrorService;
-    private GetUserByJWTUtil getUserByJWTUtil;
     private ItemListingRepository itemListingRepository;
     private ItemListingService itemListingService;
     private AccountRepository accountRepository;
 
-    // Checks item listing
-    @PostMapping(path = "/newItemListing")
-    public ResponseEntity<?>newItemListing(@RequestBody NewItemListingRequest listingRequest, BindingResult result){
+    // Get all listings
+    @GetMapping(path = "/viewAllListings")
+    public List<ItemListing> viewAllListings(){
+        return itemListingRepository.findAll();
+    }
 
-        Account currentUser = accountRepository.getById(listingRequest.getId());
+    // Checks item listing
+    //TODO FIX RETURN
+    @PostMapping(path = "/newItemListing")
+    public Long newItemListing(@RequestBody NewItemListingRequest listingRequest, BindingResult result){
+
+        Integer tmpListingID = new Random().nextInt(10000);
 
         ItemListing newItemListing = new ItemListing(
                 listingRequest.getId(),
                 listingRequest.getListingTitle(),
                 listingRequest.getPrice(),
                 listingRequest.getItemCondition(),
-                listingRequest.getDescription()
+                listingRequest.getDescription(),
+                tmpListingID
         );
 
         itemListingValidator.validate(newItemListing, result);
         ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
-        if(errorMap != null) return errorMap;
+        if(errorMap != null){
+            throw new org.springframework.security.access.AccessDeniedException(errorMap.toString());
+        }
 
         itemListingRepository.save(newItemListing);
 
-        Long newListingId =  itemListingService.getNewListingID(currentUser.getId(), listingRequest);
-
-        return ResponseEntity.ok(new ItemListingCreateSucessReponse(true, newListingId));
+        return itemListingService.getNewListingID(tmpListingID);
     }
 
     // TODO: Adds images to item listing
     @PostMapping(path = "/addImageToListing/{id}")
-    public ResponseEntity<?>addImageToListing(@PathVariable(value = "id") Long id, HttpServletRequest request, BindingResult result) {
+    public ResponseEntity<?>addImageToListing(@PathVariable(value = "id") Long id, BindingResult result) {
 
         // TODO: Adds images to item listing
 
@@ -66,15 +72,15 @@ public class ItemListingController {
     }
 
     // Modify item listing details
-    @PutMapping(path = "/modifyItemListing/{id}")
-    public ResponseEntity<?>modifyItemListing(@PathVariable(value = "id") Long id, HttpServletRequest request, BindingResult result, @RequestBody NewItemListingRequest listingRequest){
-        Account currentUser = getUserByJWTUtil.getUserIdByJWT(request);
+    @PutMapping(path = "/modifyItemListing")
+    public ResponseEntity<?>modifyItemListing(BindingResult result, @RequestBody NewItemListingRequest listingRequest){
+        Account currentUser = accountRepository.getById(listingRequest.getId());
 
-        if(currentUser.getId() == itemListingRepository.getById(id).getAccountId()){
+        if(currentUser.getId() == itemListingRepository.getById(listingRequest.getId()).getAccountId()){
             ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
             if(errorMap != null) return errorMap;
 
-            itemListingService.updateItemListingDetails(id, listingRequest);
+            itemListingService.updateItemListingDetails(listingRequest.getId(), listingRequest);
         }else{ // when modifying listing that does not belong to the current user
             throw new org.springframework.security.access.AccessDeniedException("403 returned, can only modify your own listings");
         }

@@ -14,23 +14,14 @@ public class ItemListingService {
 
     private ItemListingRepository itemListingRepository;
 
-    public Long getNewListingID(Long id, NewItemListingRequest listingRequest){
-        Long listingID = null;
-        List<ItemListing> itemListings = itemListingRepository.findAllByUserId(id);
+    public Long getNewListingID(Integer tmpListingID){
+        ItemListing newListing = itemListingRepository.getByTmpId(tmpListingID);
+        Long newListingId = newListing.getId();
 
-        for (ItemListing itemListing : itemListings) {
-            if (itemListing.getListingTitle().equals(listingRequest.getListingTitle())) {
-                if(itemListing.getPrice() == listingRequest.getPrice()){
-                    if(itemListing.getItemCondition().equals(listingRequest.getItemCondition())){
-                        if(itemListing.getDescription().equals(listingRequest.getDescription())){
-                            listingID = itemListing.getId();
-                        }
-                    }
-                }
-            }
-        }
+        newListing.setTmplistingID(null);
+        itemListingRepository.save(newListing);
 
-        return listingID;
+        return newListingId;
     }
 
     // TODO

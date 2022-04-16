@@ -4,7 +4,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import rmit.cc.a1.Account.model.Account;
 import rmit.cc.a1.utils.ItemCondition;
 
 import javax.persistence.*;
@@ -45,11 +44,15 @@ public class ItemListing {
     @Column(name = "isListingSuspended")
     private Boolean ListingSuspended = false;
 
+    @Column(name = "tmp_listingID")
+    private Integer tmplistingID;
+
     @Column(name = "create_At")
     private Date create_At = new Date();
 
     @Column(name = "update_At")
     private Date update_At;
+
 
     @PrePersist
     protected void onCreate(){
@@ -61,12 +64,13 @@ public class ItemListing {
         this.update_At = new Date();
     }
 
-    public ItemListing(Long accountId, String listingTitle, Double price, ItemCondition itemCondition, String description) {
+    public ItemListing(Long accountId, String listingTitle, Double price, ItemCondition itemCondition, String description, Integer tmplistingID) {
         this.accountId = accountId;
         ListingTitle = listingTitle;
         this.price = price;
         this.itemCondition = itemCondition;
         this.description = description;
+        this.tmplistingID = tmplistingID;
     }
 
 }

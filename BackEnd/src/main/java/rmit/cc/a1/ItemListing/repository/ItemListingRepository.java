@@ -18,6 +18,9 @@ public interface ItemListingRepository extends JpaRepository<ItemListing, Long> 
     @Query("SELECT a FROM ItemListing a WHERE a.accountId = ?1")
     List<ItemListing> findAllByUserId(Long id);
 
+    @Query("SELECT a FROM ItemListing a WHERE a.tmplistingID = ?1")
+    ItemListing getByTmpId(Integer id);
+
     // Delete a listing
     void deleteById(Long id);
 
