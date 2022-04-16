@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import rmit.cc.a1.AWSConfig.s3.service.S3Service;
 import rmit.cc.a1.Account.model.Account;
 import rmit.cc.a1.Account.repository.AccountRepository;
@@ -37,7 +38,6 @@ public class ItemListingController {
     private ItemListingRepository itemListingRepository;
     private ItemListingService itemListingService;
     private AccountRepository accountRepository;
-    private ItemImagesRepository itemImagesRepository;
     private ItemImagesService itemImagesService;
     private S3Service s3Service;
 
@@ -50,56 +50,30 @@ public class ItemListingController {
     // Checks item listing
     @PostMapping(path = "/newItemListing")
     public Long newItemListing(@RequestBody NewItemListingRequest listingRequest, BindingResult result){
-
         Integer tmpListingID = new Random().nextInt(10000);
+        ItemListing newItemListing = itemListingService.newItemListing(listingRequest, tmpListingID);
 
-        try{
-            ItemListing newItemListing = new ItemListing(
-                    listingRequest.getId(),
-                    listingRequest.getListingTitle(),
-                    listingRequest.getPrice(),
-                    listingRequest.getItemCondition(),
-                    listingRequest.getDescription(),
-                    tmpListingID
-            );
-
+        if(newItemListing != null){
             itemListingValidator.validate(newItemListing, result);
             ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
             if(errorMap != null){
                 throw new org.springframework.security.access.AccessDeniedException(errorMap.toString());
             }
-
-            itemListingRepository.save(newItemListing);
-        } catch (Exception e) {
-            logger.error("Error creating new listing" + e);
-            System.err.println("Error creating new listing" + e);
+        }else{
+            // Returns null if RequestBody is empty
+            return null;
         }
 
-        // Create bucket for user if not already exist
-        try{
-            Account currentUser = accountRepository.getById(listingRequest.getId());
-            s3Service.createS3Bucket(currentUser.getUserRole().toString(), currentUser.getId(), currentUser.getUuid());
-        } catch (Exception e) {
-            logger.error("Error creating new S3 Bucket \n" + e);
-            System.err.println("Error creating new S3 Bucket \n" + e);
-        }
+        itemListingService.createS3BucketForUser(listingRequest.getId());
 
         return itemListingService.getNewListingID(tmpListingID);
     }
 
     // Add images to item listing
     @PostMapping(path = "/addImageToListing/{id}")
-    public ResponseEntity<?>addImageToListing(@PathVariable(value = "id") Long id) {
-        ItemListing toAddImage = itemListingRepository.getById(id);
+    public ResponseEntity<?>addImageToListing(@PathVariable(value = "id") Long id, MultipartFile multipartFile) {
 
-        // TODO: Adds images to item listing via S3
-        ItemImages newImage = new ItemImages(
-                toAddImage,
-                "NAME",
-                "LINK"
-        );
-
-        itemImagesRepository.save(newImage);
+        itemImagesService.addImageToListing(id, multipartFile);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
