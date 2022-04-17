@@ -3,21 +3,13 @@ package rmit.cc.a1.ItemListing.services;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.multipart.MultipartFile;
 import rmit.cc.a1.AWSConfig.s3.service.S3Service;
 import rmit.cc.a1.Account.model.Account;
 import rmit.cc.a1.Account.repository.AccountRepository;
-import rmit.cc.a1.ItemListing.model.ItemImages;
 import rmit.cc.a1.ItemListing.model.ItemListing;
-import rmit.cc.a1.ItemListing.repository.ItemImagesRepository;
 import rmit.cc.a1.ItemListing.repository.ItemListingRepository;
 import rmit.cc.a1.ItemListing.requests.NewItemListingRequest;
-
-import java.util.List;
-import java.util.Random;
 
 @Service
 @AllArgsConstructor

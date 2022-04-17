@@ -12,19 +12,15 @@ import rmit.cc.a1.AWSConfig.s3.service.S3Service;
 import rmit.cc.a1.Account.model.Account;
 import rmit.cc.a1.Account.repository.AccountRepository;
 import rmit.cc.a1.Account.services.MapValidationErrorService;
-import rmit.cc.a1.ItemListing.model.ItemImages;
 import rmit.cc.a1.ItemListing.model.ItemListing;
-import rmit.cc.a1.ItemListing.repository.ItemImagesRepository;
 import rmit.cc.a1.ItemListing.repository.ItemListingRepository;
 import rmit.cc.a1.ItemListing.requests.NewItemListingRequest;
 import rmit.cc.a1.ItemListing.services.ItemImagesService;
 import rmit.cc.a1.ItemListing.services.ItemListingService;
-import rmit.cc.a1.ItemListing.util.ItemListingCreateSucessReponse;
 import rmit.cc.a1.ItemListing.validator.ItemListingValidator;
 
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")

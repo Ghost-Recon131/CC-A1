@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import rmit.cc.a1.Account.model.Account;
 import rmit.cc.a1.Account.repository.AccountRepository;
 import rmit.cc.a1.Account.requests.AccountRegisterRequest;
 import rmit.cc.a1.Account.requests.LoginRequest;
@@ -25,7 +24,6 @@ import rmit.cc.a1.security.JwtTokenProvider;
 
 import javax.validation.Valid;
 
-import static rmit.cc.a1.security.SecurityConstant.HEADER_STRING;
 import static rmit.cc.a1.security.SecurityConstant.TOKEN_PREFIX;
 
 @RestController

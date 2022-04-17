@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import rmit.cc.a1.Account.model.Account;
 import rmit.cc.a1.Account.requests.ResetPasswordRequest;
 
 @Component

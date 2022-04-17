@@ -8,8 +8,6 @@ import rmit.cc.a1.Account.model.Account;
 import rmit.cc.a1.Account.repository.AccountRepository;
 import rmit.cc.a1.Account.requests.LoginRequest;
 
-import java.util.List;
-
 @Component
 @AllArgsConstructor
 public class LoginValidator implements Validator {
