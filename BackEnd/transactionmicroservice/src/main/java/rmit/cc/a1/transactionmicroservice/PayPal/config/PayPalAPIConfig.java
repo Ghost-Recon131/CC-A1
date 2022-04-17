@@ -1,4 +1,4 @@
-package rmit.cc.a1.PayPal.config;
+package rmit.cc.a1.transactionmicroservice.PayPal.config;
 
 import java.util.HashMap;
 import java.util.Map;

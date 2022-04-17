@@ -1,4 +1,4 @@
-package rmit.cc.a1.Transaction.model;
+package rmit.cc.a1.transactionmicroservice.Transaction.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
