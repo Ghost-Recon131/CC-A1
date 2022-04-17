@@ -56,8 +56,8 @@ public class TransactionController {
 
     //path = "/cancel",
     @GetMapping(value = cancelURL)
-    public String cancelPay() {
-
+    public String cancelPay(@RequestParam("token") String token) {
+        transactionService.cancelTransaction(token);
         return "Payment was cancelled";
     }
 
@@ -78,7 +78,7 @@ public class TransactionController {
         return "redirect:/";
     }
 
-    // TODO: TEMP PATHS
+    //TODO: TEMP PATHS
     @RequestMapping("/success")
     public String PayPalSuccess(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String PayerID) {
         try {
@@ -100,5 +100,6 @@ public class TransactionController {
         transactionService.cancelTransaction(token);
         return "Paypal Payment was canceled";
     }
+    //TODO: Above are temp methods
 
 }
