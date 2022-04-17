@@ -14,12 +14,18 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "transaction")
-public class Transaction {
+public class Transactions {
 
     @Id
-    @Column(name = "TransactionID")
+    @Column(name = "webapp_transactionid")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long TransactionID;
+
+    @Column(name = "paypal_pay_id")
+    private String paypalPayID;
+
+    @Column(name = "paypal_Token")
+    private String paypalToken;
 
     @Column(name = "buyerID")
     private Long buyerID;
@@ -35,6 +41,10 @@ public class Transaction {
     @Column(name = "itemListing_id")
     private Long itemListingID;
 
+    // intent of transfer, required by PayPal API
+    @Column(name = "intent")
+    private String intent;
+
     @Column(name = "currency")
     private String currency;
 
@@ -42,18 +52,22 @@ public class Transaction {
     private Double price;
 
     @Column(name = "Status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
-    @Column(name = "TrackingNumber")
+    @Column(name = "tracking_number")
     private String TrackingNumber;
 
     @PrePersist
     protected void onCreate() {
         this.TimeOfPurchase = new Date();
-        this.status = "Processing";
+        this.intent = "item sale";
+        this.status = Status.PENDING;
     }
 
-    public Transaction(Long buyerID, Long sellerID, Long itemListingID, Double price, String currency, String trackingNumber) {
+    public Transactions(String paypalPayID, String paypalToken, Long buyerID, Long sellerID, Long itemListingID, Double price, String currency, String trackingNumber) {
+        this.paypalPayID = paypalPayID;
+        this.paypalToken = paypalToken;
         this.buyerID = buyerID;
         this.sellerID = sellerID;
         this.itemListingID = itemListingID;
