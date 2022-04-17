@@ -8,10 +8,10 @@
 		<version>2.6.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>rmit.cc</groupId>
-	<artifactId>a1</artifactId>
+	<groupId>rmit.cc.a1</groupId>
+	<artifactId>appmicroservice</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>a1</name>
+	<name>appmicroservice</name>
 	<description>Cloud Computing A1 Web App</description>
 	<properties>
 		<java.version>1.8</java.version>
@@ -88,6 +88,11 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.11.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.paypal.sdk</groupId>
+			<artifactId>rest-api-sdk</artifactId>
+			<version>1.4.2</version>
 		</dependency>
 	</dependencies>
 
