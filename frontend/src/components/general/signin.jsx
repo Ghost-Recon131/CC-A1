@@ -3,7 +3,6 @@ import axios from "axios";
 import { useState } from "react";
 import cookie from "js-cookie";
 import { useNavigate } from "react-router-dom";
-import cookie from "js-cookie";
 
 export default function Component() {
   var [formData, setFormData] = useState({ username: "", password: "" });
@@ -17,7 +16,7 @@ export default function Component() {
     setFormData({ ...formData, [name]: value });
   }
 
-  async function submit(event) {
+  async function formSubmit(event) {
     event.preventDefault();
     console.log(JSON.stringify(formData));
     try {
@@ -32,8 +31,9 @@ export default function Component() {
       }
       // Param 1 = name for cookie, 2nd = value, stringify turns object to string
       // create or update uset set
-      // to get cookie, eg :  var user = JSON.parse(cookie.get("user")) 
-      cookie.set("user", JSON.stringify({}));
+      // to get cookie, eg :  var user = JSON.parse(cookie.get("user"))
+      // eg user.id or user.username
+      cookie.set("user", JSON.stringify(res.data));
       navigate("/");
     } catch (resError) {
       setError(resError.response.data.error);
@@ -42,8 +42,8 @@ export default function Component() {
 
   return (
     <form
-      onSubmit={submit}
-      className="bg-white text-black shadow-md rounded px-20 pt-6 pb-8 mb-4 flex flex-col"
+      onSubmit={formSubmit}
+      className="bg-white text-black shadow-md rounded px-96 pt-6 pb-8 mb-4 flex flex-col"
     >
       <h1 className="text-3xl font-bold mb-10">Sign in</h1>
       <div className="mb-4">

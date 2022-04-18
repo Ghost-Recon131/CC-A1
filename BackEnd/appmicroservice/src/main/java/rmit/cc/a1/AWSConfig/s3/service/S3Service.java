@@ -63,7 +63,7 @@ public class S3Service {
         try{
             s3ObjectURL = amazonS3.utilities().getUrl(builder -> builder.bucket(s3BucketName).key(fileKey)).toExternalForm();
             ItemImages toUpdate = itemImagesRepository.getById(imageID);
-            toUpdate.setImageName(fileKey+fileExtension);
+            toUpdate.setImageName(fileKey);
             toUpdate.setImageLink(s3ObjectURL);
             itemImagesRepository.save(toUpdate);
         } catch (Exception e){
