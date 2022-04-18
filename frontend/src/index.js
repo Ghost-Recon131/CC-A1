@@ -8,6 +8,7 @@ import Register from "components/general/register";
 import ForgotPassword from "components/general/forgotpassword";
 import NavBar from "components/general/navbar";
 import Footer from "components/general/footer";
+import ModifyAccountInfo from "components/general/modifyaccountinfo";
 
 render(
   <div className="bg-black text-white px-10">
@@ -17,7 +18,8 @@ render(
         <Route path="/" element={<Home />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/register" element={<Register />} />
-          <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route path="/modifyaccountinfo" element={<ModifyAccountInfo />} />
       </Routes>
       <Footer />
     </BrowserRouter>
