@@ -43,6 +43,12 @@ public class ItemListingController {
         return itemListingRepository.findAll();
     }
 
+    @GetMapping(path = "/viewListingByID")
+    public ItemListing viewListingByID(@RequestParam("id")Long id){
+        Long varLong = Long.parseLong(String.valueOf(id));
+        return itemListingRepository.getById(varLong);
+    }
+
     // Checks item listing
     @PostMapping(path = "/newItemListing")
     public Long newItemListing(@RequestBody NewItemListingRequest listingRequest, BindingResult result){

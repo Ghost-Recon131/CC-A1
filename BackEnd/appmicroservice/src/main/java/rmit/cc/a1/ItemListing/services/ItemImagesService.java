@@ -36,7 +36,7 @@ public class ItemImagesService {
     }
 
     // Add images to existing listing
-    public String addImageToListing(Long id, Long userId, MultipartFile multipartFile, String fileName,Integer tmpImageId){
+    public String addImageToListing(Long id, Long userId, MultipartFile multipartFile, String fileName, Integer tmpImageId){
         ItemListing toAddImage = itemListingRepository.getById(id);
 
         // TODO: Adds images to item listing via S3
