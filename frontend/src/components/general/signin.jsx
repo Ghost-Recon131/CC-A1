@@ -1,11 +1,9 @@
 import { getGlobalState, setGlobalState } from "utils/globalState";
 import axios from "axios";
 import { useState } from "react";
-import cookie from 'js-cookie'
-import {
-  useNavigate,
-} from 'react-router-dom';
-
+import cookie from "js-cookie";
+import { useNavigate } from "react-router-dom";
+import cookie from "js-cookie";
 
 export default function Component() {
   var [formData, setFormData] = useState({ username: "", password: "" });
@@ -21,26 +19,24 @@ export default function Component() {
 
   async function submit(event) {
     event.preventDefault();
-    console.log(JSON.stringify(formData))
+    console.log(JSON.stringify(formData));
     try {
       var res = await axios.post(
         getGlobalState("backendDomain") + "/api/RegisterLogin/login",
         formData
       );
       console.log(JSON.stringify(res.data));
-      if(res.data.error){
-        setError(res.data.error)
-        return
+      if (res.data.error) {
+        setError(res.data.error);
+        return;
       }
-      if(res.data.success === true){
-        cookie.set('jwt', res.data.token, {
-          // 7 days
-          expires: 7,
-        })
-      }
-      navigate('/')
+      // Param 1 = name for cookie, 2nd = value, stringify turns object to string
+      // create or update uset set
+      // to get cookie, eg :  var user = JSON.parse(cookie.get("user")) 
+      cookie.set("user", JSON.stringify({}));
+      navigate("/");
     } catch (resError) {
-      setError(resError.response.data.error)
+      setError(resError.response.data.error);
     }
   }
 
