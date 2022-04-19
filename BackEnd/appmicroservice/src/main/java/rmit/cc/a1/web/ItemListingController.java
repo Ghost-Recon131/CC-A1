@@ -118,7 +118,7 @@ public class ItemListingController {
 
     // Deletes item listings and the corresponding images
     @DeleteMapping(path = "/deleteItemListing/{id}")
-    public ResponseEntity<?>deleteItemListing(@PathVariable(value = "id") Long listingID, @RequestParam(value = "listingID") Long userID){
+    public ResponseEntity<?>deleteItemListing(@PathVariable(value = "id") Long listingID, @RequestParam(value = "userID") Long userID){
 
         try{
             itemListingService.deleteItemListingDetails(listingID, userID);
