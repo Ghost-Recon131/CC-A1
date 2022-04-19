@@ -10,6 +10,7 @@ import rmit.cc.a1.Account.repository.AccountRepository;
 import rmit.cc.a1.ItemListing.model.ItemListing;
 import rmit.cc.a1.ItemListing.repository.ItemListingRepository;
 import rmit.cc.a1.ItemListing.requests.NewItemListingRequest;
+import rmit.cc.a1.utils.ItemCondition;
 
 @Service
 @AllArgsConstructor
@@ -34,6 +35,7 @@ public class ItemListingService {
     // Allows users to update their listing
     public void updateItemListingDetails(Long id, NewItemListingRequest request){
         ItemListing toUpdate = itemListingRepository.getById(id);
+        ItemCondition condition = ItemCondition.valueOf(request.getItemCondition());
 
         if(request.getListingTitle() != null){
             toUpdate.setListingTitle(request.getListingTitle());
@@ -44,7 +46,7 @@ public class ItemListingService {
         }
 
         if(request.getItemCondition() != null){
-            toUpdate.setItemCondition(request.getItemCondition());
+            toUpdate.setItemCondition(condition);
         }
 
         if(request.getDescription() != null){
@@ -56,12 +58,15 @@ public class ItemListingService {
     public ItemListing newItemListing(NewItemListingRequest listingRequest, Integer tmpListingID) {
 
         ItemListing newItemListing = null;
+
+        // Need to convert to enum
+        ItemCondition condition = ItemCondition.valueOf(listingRequest.getItemCondition());
         try {
             newItemListing = new ItemListing(
                     listingRequest.getId(),
                     listingRequest.getListingTitle(),
                     listingRequest.getPrice(),
-                    listingRequest.getItemCondition(),
+                    condition,
                     listingRequest.getDescription(),
                     tmpListingID
             );
