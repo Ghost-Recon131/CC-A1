@@ -24,7 +24,7 @@ export default function Component() {
         getGlobalState("backendDomain") + "/api/RegisterLogin/login",
         formData
       );
-      console.log(JSON.stringify(res.data));
+      // console.log(JSON.stringify(res.data));
       if (res.data.error) {
         setError(res.data.error);
         return;

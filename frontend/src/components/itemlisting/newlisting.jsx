@@ -20,6 +20,7 @@ export default function Component() {
 
   var [user, setUser] = useState({});
 
+
   useEffect(() => {
     if (cookie.get("user")) {
       user = JSON.parse(cookie.get("user"));
@@ -77,9 +78,7 @@ export default function Component() {
         JSON.stringify("Response from posting new item listing" + res1.data)
       );
 
-      // TODO: Upload image to S3 - need fix
-      // TODO: Bug where userID is sent with single post but sends null when 2nd post is not commented out
-
+      // 2nd Post to upload image to S3
       var res2 = await axios.post(
         // addImageToListing/{listing ID}?userId={currentUserID}&filename={original name of the uploaded file}
         getGlobalState("backendDomain") +
@@ -109,6 +108,23 @@ export default function Component() {
       // setError(resError.response.data.error);
     }
   }
+
+  function itemCondition(event) {
+    event.preventDefault();
+    if (event.target.value === "BRAND_NEW") {
+      setFormData({ ...formData, itemCondition: "BRAND_NEW"});
+    } else if (event.target.value === "OPENED") {
+      setFormData({ ...formData, itemCondition: "OPENED"});
+    }else if (event.target.value === "USED") {
+      setFormData({ ...formData, itemCondition: "USED"});
+    }else if (event.target.value === "DAMAGED") {
+      setFormData({ ...formData, itemCondition: "DAMAGED"});
+    }else if (event.target.value === "BROKEN") {
+      setFormData({ ...formData, itemCondition: "BROKEN"});
+    }
+
+  }
+
 
   return (
     <form
@@ -150,15 +166,32 @@ export default function Component() {
         <label className="block text-grey-darker text-sm font-bold mb-2">
           itemCondition
         </label>
-        <input
-          value={itemCondition}
-          name="itemCondition"
-          onChange={formInputs}
-          className="shadow appearance-none border border-red rounded w-full py-2 px-3 text-grey-darker mb-3"
-          type="text"
-          placeholder="brand new? used?"
-          required
-        />
+
+
+        <select
+            className="custom-select text-capitalize"
+            onChange={itemCondition}
+            value=""
+        >
+          <option hidden>{user.username}</option>
+          <option value="BRAND_NEW">Brand new</option>
+          <option value="OPENED">Opened</option>
+          <option value="USED">Used</option>
+          <option value="DAMAGED">Damaged</option>
+          <option value="BROKEN">Broken</option>
+        </select>
+
+
+
+        {/*<input*/}
+        {/*  value={itemCondition}*/}
+        {/*  name="itemCondition"*/}
+        {/*  onChange={formInputs}*/}
+        {/*  className="shadow appearance-none border border-red rounded w-full py-2 px-3 text-grey-darker mb-3"*/}
+        {/*  type="text"*/}
+        {/*  placeholder="brand new? used?"*/}
+        {/*  required*/}
+        {/*/>*/}
       </div>
 
       <div className="mb-6">
