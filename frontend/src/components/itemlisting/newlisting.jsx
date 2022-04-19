@@ -6,8 +6,8 @@ import { useNavigate, Link, useParams } from "react-router-dom";
 
 export default function Component() {
   var navigate = useNavigate();
-  var [imageName, setImageName] = useState("");
-  var [imageFile, setImageFile] = useState({});
+  const [imageName, setImageName] = useState("");
+  const [imageFile, setImageFile] = useState(null);
   var [error, setError] = useState("");
   var [formData, setFormData] = useState({
     id: "",
@@ -37,12 +37,20 @@ export default function Component() {
 
   function formImage(event) {
     event.preventDefault();
+
+    let file = event.target.files[0];
+    const imageFile = new FormData();
+    imageFile.append("file", file);
+
+    setImageFile(imageFile);
+
     setImageName(
       event.target.value
         .toString()
         .substring(event.target.value.toString().lastIndexOf("\\") + 1)
     );
-    setImageFile(event.target.files[0]);
+
+    // setImageFile(event.target.files[0]);
   }
 
   async function formSubmit(event) {
@@ -72,7 +80,7 @@ export default function Component() {
           // user.id +
           "&filename=" +
           imageName,
-        { file: imageFile }
+          imageFile
       );
 
       console.log(
