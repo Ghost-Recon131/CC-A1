@@ -15,7 +15,7 @@ export default function Component() {
       var res = await axios.get(
         getGlobalState("backendDomain") + "/api/itemListings/viewAllListings"
       );
-      console.log(JSON.stringify(res.data))
+      // console.log(JSON.stringify(res.data))
       setItemListings(res.data);
     }
     axiosPost();

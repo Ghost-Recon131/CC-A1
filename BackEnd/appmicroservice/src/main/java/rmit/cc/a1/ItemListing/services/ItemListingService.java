@@ -55,7 +55,7 @@ public class ItemListingService {
 
     }
 
-    public ItemListing newItemListing(NewItemListingRequest listingRequest, Integer tmpListingID) {
+    public ItemListing newItemListing(Long userID, NewItemListingRequest listingRequest, Integer tmpListingID) {
 
         ItemListing newItemListing = null;
 
@@ -63,7 +63,7 @@ public class ItemListingService {
         ItemCondition condition = ItemCondition.valueOf(listingRequest.getItemCondition());
         try {
             newItemListing = new ItemListing(
-                    listingRequest.getId(),
+                    userID,
                     listingRequest.getListingTitle(),
                     listingRequest.getPrice(),
                     condition,

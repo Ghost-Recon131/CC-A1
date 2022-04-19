@@ -10,19 +10,26 @@ export default function Component() {
   const [imageFile, setImageFile] = useState(null);
   var [error, setError] = useState("");
   var [formData, setFormData] = useState({
-    id: "",
     listingTitle: "",
     price: "",
     itemCondition: "",
     description: "",
   });
-  var { id, listingTitle, price, itemCondition, description } = formData;
+
+  var {listingTitle, price, itemCondition, description } = formData;
 
   var [user, setUser] = useState({});
+
+  const [userID, setUserID] = useState(null);
 
   useEffect(() => {
     if (cookie.get("user")) {
       user = JSON.parse(cookie.get("user"));
+      setUser(user);
+
+      console.log("Get cookie" + cookie.get("user"));
+      console.log("Current user" + user.id);
+
     } else {
       navigate("/signin");
     }
@@ -56,10 +63,15 @@ export default function Component() {
   async function formSubmit(event) {
     event.preventDefault();
     try {
-      setFormData({ ...formData, id: 2 });
+      setFormData({ ...formData});
+
+      console.log(
+          JSON.stringify("userid before 1st post" + user.id)
+      );
+
       // Create listing
       var res1 = await axios.post(
-        getGlobalState("backendDomain") + "/api/itemListings/newItemListing",
+        getGlobalState("backendDomain") + "/api/itemListings/newItemListing/" + user.id,
         formData
       );
 
@@ -76,7 +88,7 @@ export default function Component() {
           "/api/itemListings/addImageToListing/" +
           res1.data +
           "?userId=" +
-          2 +
+          user.id +
           // user.id +
           "&filename=" +
           imageName,

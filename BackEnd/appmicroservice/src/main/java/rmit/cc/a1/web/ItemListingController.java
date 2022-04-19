@@ -50,10 +50,18 @@ public class ItemListingController {
     }
 
     // Checks item listing
-    @PostMapping(path = "/newItemListing")
-    public Long newItemListing(@RequestBody NewItemListingRequest listingRequest, BindingResult result){
+    @PostMapping(path = "/newItemListing/{id}")
+    public Long newItemListing(@PathVariable(value = "id") Long userID, @RequestBody NewItemListingRequest listingRequest, BindingResult result){
+        //TODO: DEBUG CODE
+        System.err.println("ID from frontend " + userID);
+        System.err.println("getListingTitle " + listingRequest.getListingTitle());
+        System.err.println("price " + listingRequest.getPrice());
+        System.err.println("itemCondition " + listingRequest.getItemCondition());
+        System.err.println("description " + listingRequest.getDescription());
+        //TODO: DELETE DEBUG CODE
+
         Integer tmpListingID = new Random().nextInt(10000);
-        ItemListing newItemListing = itemListingService.newItemListing(listingRequest, tmpListingID);
+        ItemListing newItemListing = itemListingService.newItemListing(userID, listingRequest, tmpListingID);
 
         if(newItemListing != null){
             itemListingValidator.validate(newItemListing, result);
@@ -66,7 +74,8 @@ public class ItemListingController {
             return null;
         }
 
-        itemListingService.createS3BucketForUser(listingRequest.getId());
+        //here
+        itemListingService.createS3BucketForUser(2L);
 
         return itemListingService.getNewListingID(tmpListingID);
     }
@@ -76,9 +85,17 @@ public class ItemListingController {
     public String addImageToListing(@PathVariable(value = "id") Long id,@RequestParam(value = "userId") Long userId,
                                     @RequestParam(value = "file") MultipartFile multipartFile, @RequestParam(value = "filename") String filename) {
 
+        boolean image =  multipartFile == null;
+        //TODO: DEBUG CODE
+        System.err.println("ID: " + id);
+        System.err.println("UserID: " + userId);
+        System.err.println("filename: " + filename);
+        System.err.println("multipartFile: " + image);
+        //TODO: DELETE DEBUG CODE
+
         Integer tmpImageId = new Random().nextInt(10000);
 
-        return itemImagesService.addImageToListing(id, userId, multipartFile, filename, tmpImageId);
+        return itemImagesService.addImageToListing(id, 2L, multipartFile, filename, tmpImageId);
     }
 
     // Returns image link for a particular item
@@ -88,18 +105,13 @@ public class ItemListingController {
     }
 
     // Modify item listing details
-    @PutMapping(path = "/modifyItemListing")
-    public ResponseEntity<?>modifyItemListing(BindingResult result, @RequestBody NewItemListingRequest listingRequest){
-        Account currentUser = accountRepository.getById(listingRequest.getId());
+    @PutMapping(path = "/modifyItemListing/{id}")
+    public ResponseEntity<?>modifyItemListing(@PathVariable(value = "id") Long listingID ,@RequestBody NewItemListingRequest listingRequest, BindingResult result){
 
-        if(currentUser.getId() == itemListingRepository.getById(listingRequest.getId()).getAccountId()){
-            ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
-            if(errorMap != null) return errorMap;
+        ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
+        if(errorMap != null) return errorMap;
 
-            itemListingService.updateItemListingDetails(listingRequest.getId(), listingRequest);
-        }else{ // when modifying listing that does not belong to the current user
-            throw new org.springframework.security.access.AccessDeniedException("403 returned, can only modify your own listings");
-        }
+        itemListingService.updateItemListingDetails(listingID, listingRequest);
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
