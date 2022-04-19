@@ -6,63 +6,89 @@ import { useNavigate, Link, useParams } from "react-router-dom";
 
 export default function Component() {
   var navigate = useNavigate();
-  var [image, setImage] = useState("");
+  var [imageName, setImageName] = useState("");
+  var [imageFile, setImageFile] = useState({});
   var [error, setError] = useState("");
   var [formData, setFormData] = useState({
-    listingtitle: "",
+    id: "",
+    listingTitle: "",
     price: "",
-    itemcondition: "",
+    itemCondition: "",
     description: "",
   });
-  var { listingtitle, price, itemcondition, description } = formData;
+  var { id, listingTitle, price, itemCondition, description } = formData;
 
-  var user = {};
-  if (cookie.get("user")) {
-    user = JSON.parse(cookie.get("user"));
-  } else {
-    navigate("/signin");
-  }
+  var [user, setUser] = useState({});
 
-  //   useEffect(() => {
-  //   }, []);
+  useEffect(() => {
+    if (cookie.get("user")) {
+      user = JSON.parse(cookie.get("user"));
+    } else {
+      navigate("/signin");
+    }
+  }, []);
 
   function formInputs(event) {
     event.preventDefault();
+    // console.log(event.target.value);
     var { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   }
-  
+
   function formImage(event) {
     event.preventDefault();
-    setImage({ ...formData, image: event.target });
-    // e.target.files, e.target.value
+    setImageName(
+      event.target.value
+        .toString()
+        .substring(event.target.value.toString().lastIndexOf("\\") + 1)
+    );
+    setImageFile(event.target.files[0]);
   }
 
   async function formSubmit(event) {
     event.preventDefault();
     try {
-      setFormData({ ...formData, currentUserID: user.id });
+      setFormData({ ...formData, id: 2 });
       // Create listing
       var res1 = await axios.post(
         getGlobalState("backendDomain") + "/api/itemListings/newItemListing",
         formData
       );
 
-      console.log(JSON.stringify("Response from posting new item listing" + res1.data));
-
-      // TODO: Upload image to S3 - need fix
-      var res2 = await axios.post(
-          // addImageToListing/{listing ID}?userId={currentUserID}&filename={original name of the uploaded file}
-        getGlobalState("backendDomain") + "/api/itemListings/addImageToListing/"+ res1.data + "?userId=" + user.id+ "&filename=" + image.value,
-        image.files
+      console.log(
+        JSON.stringify("Response from posting new item listing" + res1.data)
       );
 
-      console.log(getGlobalState("Sent to URL" +  "/api/itemListings/addImageToListing/"+ res1.data + "?userId=" + user.id+ "&filename=" + image.value));
+      // TODO: Upload image to S3 - need fix
+      // TODO: Bug where userID is sent with single post but sends null when 2nd post is not commented out
 
+      var res2 = await axios.post(
+        // addImageToListing/{listing ID}?userId={currentUserID}&filename={original name of the uploaded file}
+        getGlobalState("backendDomain") +
+          "/api/itemListings/addImageToListing/" +
+          res1.data +
+          "?userId=" +
+          2 +
+          // user.id +
+          "&filename=" +
+          imageName,
+        { file: imageFile }
+      );
+
+      console.log(
+        "/api/itemListings/addImageToListing/" +
+          res1.data +
+          "?userId=" +
+          user.id +
+          "&filename=" +
+          imageName
+      );
+
+      // console.log(JSON.stringify(image.files[0]))
 
       navigate("/");
     } catch (resError) {
-      setError(resError.response.data.error);
+      // setError(resError.response.data.error);
     }
   }
 
@@ -74,11 +100,11 @@ export default function Component() {
       <h1 className="text-3xl font-bold mb-10">Create new item listing</h1>
       <div className="mb-4">
         <label className="block text-grey-darker text-sm font-bold mb-2">
-          Listing Title
+          listingTitle
         </label>
         <input
-          value={listingtitle}
-          name="listingtitle"
+          value={listingTitle}
+          name="listingTitle"
           onChange={formInputs}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
           type="text"
@@ -104,11 +130,11 @@ export default function Component() {
       {/* TODO: Change to dropdown */}
       <div className="mb-6">
         <label className="block text-grey-darker text-sm font-bold mb-2">
-          itemcondition
+          itemCondition
         </label>
         <input
-          value={itemcondition}
-          name="itemcondition"
+          value={itemCondition}
+          name="itemCondition"
           onChange={formInputs}
           className="shadow appearance-none border border-red rounded w-full py-2 px-3 text-grey-darker mb-3"
           type="text"
