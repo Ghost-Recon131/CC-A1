@@ -20,8 +20,6 @@ export default function Component() {
 
   var [user, setUser] = useState({});
 
-  const [userID, setUserID] = useState(null);
-
   useEffect(() => {
     if (cookie.get("user")) {
       user = JSON.parse(cookie.get("user"));
