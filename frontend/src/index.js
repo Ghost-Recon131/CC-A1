@@ -11,6 +11,7 @@ import ForgotPassword from "components/general/forgotpassword";
 import NavBar from "components/general/navbar";
 import Footer from "components/general/footer";
 import ModifyAccountInfo from "components/general/modifyaccountinfo";
+import ViewAccountInfo from "components/general/viewaccountinfo";
 
 createRoot(
   document.getElementById("root")
@@ -26,6 +27,7 @@ createRoot(
         <Route path="/register" element={<Register />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/modifyaccountinfo" element={<ModifyAccountInfo />} />
+        <Route path="/viewaccountinfo" element={<ViewAccountInfo />} />
       </Routes>
       <Footer />
     </BrowserRouter>
