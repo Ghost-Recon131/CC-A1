@@ -11,7 +11,10 @@ export default function Component() {
       navigate("/");
     } else if (event.target.value === "newListing") {
       navigate("/newlisting");
+    }else if (event.target.value === "viewAccountInfo") {
+      navigate("/viewAccountInfo");
     }
+
   }
 
   // Convert from string to object
@@ -39,6 +42,7 @@ export default function Component() {
             >
               <option hidden>{user.username}</option>
               <option value="newListing">New Listing</option>
+              <option value="viewAccountInfo">View Account info</option>
               <option value="signOut">Sign Out</option>
             </select>
           </div>
