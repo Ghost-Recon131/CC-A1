@@ -116,6 +116,20 @@ public class ItemListingController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
+    // Deletes item listings and the corresponding images
+    @DeleteMapping(path = "/deleteItemListing/{id}")
+    public ResponseEntity<?>deleteItemListing(@PathVariable(value = "id") Long listingID, @RequestParam(value = "listingID") Long userID){
+
+        try{
+            itemListingService.deleteItemListingDetails(listingID, userID);
+        }catch (Exception e){
+            logger.error("Failed to delete image \n" + e);
+            System.err.println("Failed to delete image \n" + e);
+        }
+
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
     //TODO: BELOW ARE TEMP API ENDPOINTS, DELETE ONCE COMPLETED TESTING
     @PostMapping(path = "/deleteS3Bucket/{id}")
     public ResponseEntity<?> deleteS3Bucket(@PathVariable(value = "id") Long id){

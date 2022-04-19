@@ -64,9 +64,5 @@ public class ItemImagesService {
         return newImageId;
     }
 
-    // TODO: Delete images
-    public void deleteItemListingImages(Long id, MultipartFile multipartfile){
-
-    }
 
 }

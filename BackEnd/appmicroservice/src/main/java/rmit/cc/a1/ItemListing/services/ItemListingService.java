@@ -7,10 +7,14 @@ import org.springframework.stereotype.Service;
 import rmit.cc.a1.AWSConfig.s3.service.S3Service;
 import rmit.cc.a1.Account.model.Account;
 import rmit.cc.a1.Account.repository.AccountRepository;
+import rmit.cc.a1.ItemListing.model.ItemImages;
 import rmit.cc.a1.ItemListing.model.ItemListing;
+import rmit.cc.a1.ItemListing.repository.ItemImagesRepository;
 import rmit.cc.a1.ItemListing.repository.ItemListingRepository;
 import rmit.cc.a1.ItemListing.requests.NewItemListingRequest;
 import rmit.cc.a1.utils.ItemCondition;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -20,7 +24,7 @@ public class ItemListingService {
     private ItemListingRepository itemListingRepository;
     private S3Service s3Service;
     private AccountRepository accountRepository;
-    private ItemImagesService itemImagesService;
+    private ItemImagesRepository itemImagesRepository;
 
     public Long getNewListingID(Integer tmpListingID){
         ItemListing newListing = itemListingRepository.getByTmpId(tmpListingID);
@@ -88,6 +92,20 @@ public class ItemListingService {
         } catch (Exception e) {
             logger.error("Error creating new S3 Bucket \n" + e);
             System.err.println("Error creating new S3 Bucket \n" + e);
+        }
+    }
+
+    // Delete item listings
+    public void deleteItemListingDetails(Long listingID, Long userID) {
+        ItemListing toDelete = itemListingRepository.getById(listingID);
+        List<ItemImages> allImages = itemImagesRepository.findByListingID(toDelete);
+
+        for (ItemImages images : allImages) {
+            if(images.getImageLink() != null){
+                s3Service.deleteImage(accountRepository.getById(userID).getUserRole().toString(), userID, images.getImageLink());
+                itemImagesRepository.deleteById(images.getId());
+                itemListingRepository.deleteById(listingID);
+            }
         }
     }
 
