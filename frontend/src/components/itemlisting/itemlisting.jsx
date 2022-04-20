@@ -13,9 +13,7 @@ export default function Component() {
   var [user, setUser] = useState({});
   var [checkOutData, setCheckOutData] = useState({buyerID: "", sellerID: "", itemListingID: "", price: "", currency: "AUD"});
   var [confirmDelete, setConfirmDelete] = useState(false);
-
-  // // For PayPal checkout
-  // var [formData, setFormData] = useState({ buyerID: "", sellerID: "", itemListingID: "", price: "", currency: "AUD"});
+  const [confirmPurchase, setConfirmPurchase] = useState(false);
 
   useEffect(() => {
 
@@ -66,23 +64,20 @@ export default function Component() {
     navigate("/");
   }
 
-
-  // axios POST for PayPal Checkout
-  function checkOut(){
-
-    // Existing data
-    // console.log("itemListing object data: " + JSON.stringify(itemListing));
-    // console.log("Get via itemListing.id: " + itemListing.id);
-    // console.log("Get seller ID via itemListing: " + itemListing.accountId);
-
+  // Sets the checkout data for paypal
+  function setData(){
     setCheckOutData({...checkOutData, buyerID: user.id, sellerID: itemListing.accountId, itemListingID: itemListing.id, price: itemListing.price, currency: "AUD"});
     console.log("Purchase form Current listing id: " + JSON.stringify(checkOutData));
+    var confirm = true;
+    setConfirmPurchase(confirm);
+  }
 
-    // Axios POST
-    // var status = await axios.post(getGlobalState("backendDomain2") + "/api/Transactions/createPayment", checkOutData);
+  // axios POST for PayPal Checkout
+  async function checkOut() {
+    var status = await axios.post(getGlobalState("backendDomain2") + "/api/Transactions/createPayment", checkOutData);
 
     // go to success or fail page
-    // navigate("/" + status);
+    navigate(status);
   }
 
   return (
@@ -100,7 +95,7 @@ export default function Component() {
        {/*If: logged-in user == creator of item listing, show below*/}
       {user.id === itemListing.accountId? (
               <div>
-                <button className="text-yellow-400" onClick={() => navigate("/editListing?" + itemListing.id)}>Edit Listing</button>
+                <button className="text-yellow-400" onClick={() => navigate("/editListing?id=" + itemListing.id)}>Edit Listing</button>
                 <p className="text-orange-600">Warning! Deleting process is permanent!</p>
                 <br></br>
                 <button className="text-red-600 font-bold" onClick={() => confirmDeleteListing()}>Delete Listing</button>
@@ -121,7 +116,13 @@ export default function Component() {
       {/*Checks that a user ID is present*/}
       {user.id != null && user.id !== itemListing.accountId? (
               <div>
-                <button className="text-green-400 font-bold" onClick={() => checkOut()}>Purchase item</button>
+                <button className="text-green-400 font-bold" onClick={setData} >Purchase item</button>
+                {confirmPurchase === true? (
+                    <div>
+                      <button className="text-blue-400 font-bold" onClick={() => checkOut()}>PayPal Checkout</button>
+                    </div>
+                ): (<div className="text-yellow-500 font-bold"></div>)
+                }
               </div>
           ): (<div></div>)
       }

@@ -5,7 +5,7 @@
 - Implement edit listing feature, base off newlisting
 
 # itemlisting
-- PayPal checkout (fix bug with checkout form)
+- PayPal checkout 
 
 # PayPal
 - Payment success page 
