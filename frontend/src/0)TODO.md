@@ -1,9 +1,3 @@
-# newlisting 
-- Implement dropdown for Item Condition
-
-# editlisting 
-- Implement edit listing feature, base off newlisting
-
 # itemlisting
 - PayPal checkout 
 

@@ -8,12 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import rmit.cc.a1.AWSConfig.s3.service.S3Service;
-import rmit.cc.a1.Account.model.Account;
-import rmit.cc.a1.Account.repository.AccountRepository;
 import rmit.cc.a1.Account.services.MapValidationErrorService;
 import rmit.cc.a1.ItemListing.model.ItemListing;
 import rmit.cc.a1.ItemListing.repository.ItemListingRepository;
+import rmit.cc.a1.ItemListing.requests.ModifyItemListingRequest;
 import rmit.cc.a1.ItemListing.requests.NewItemListingRequest;
 import rmit.cc.a1.ItemListing.services.ItemImagesService;
 import rmit.cc.a1.ItemListing.services.ItemListingService;
@@ -33,9 +31,7 @@ public class ItemListingController {
     private MapValidationErrorService mapValidationErrorService;
     private ItemListingRepository itemListingRepository;
     private ItemListingService itemListingService;
-    private AccountRepository accountRepository;
     private ItemImagesService itemImagesService;
-    private S3Service s3Service;
 
     // Get all listings
     @GetMapping(path = "/viewAllListings")
@@ -85,17 +81,9 @@ public class ItemListingController {
     public String addImageToListing(@PathVariable(value = "id") Long id,@RequestParam(value = "userId") Long userId,
                                     @RequestParam(value = "file") MultipartFile multipartFile, @RequestParam(value = "filename") String filename) {
 
-        boolean image =  multipartFile == null;
-        //TODO: DEBUG CODE
-        System.err.println("ID: " + id);
-        System.err.println("UserID: " + userId);
-        System.err.println("filename: " + filename);
-        System.err.println("multipartFile: " + image);
-        //TODO: DELETE DEBUG CODE
-
         Integer tmpImageId = new Random().nextInt(10000);
 
-        return itemImagesService.addImageToListing(id, 2L, multipartFile, filename, tmpImageId);
+        return itemImagesService.addImageToListing(id, userId, multipartFile, filename, tmpImageId);
     }
 
     // Returns image link for a particular item
@@ -106,10 +94,7 @@ public class ItemListingController {
 
     // Modify item listing details
     @PutMapping(path = "/modifyItemListing/{id}")
-    public ResponseEntity<?>modifyItemListing(@PathVariable(value = "id") Long listingID ,@RequestBody NewItemListingRequest listingRequest, BindingResult result){
-
-        ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
-        if(errorMap != null) return errorMap;
+    public ResponseEntity<?>modifyItemListing(@PathVariable(value = "id") Long listingID , @RequestBody ModifyItemListingRequest listingRequest){
 
         itemListingService.updateItemListingDetails(listingID, listingRequest);
 
@@ -129,16 +114,5 @@ public class ItemListingController {
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
-
-    //TODO: BELOW ARE TEMP API ENDPOINTS, DELETE ONCE COMPLETED TESTING
-    @PostMapping(path = "/deleteS3Bucket/{id}")
-    public ResponseEntity<?> deleteS3Bucket(@PathVariable(value = "id") Long id){
-        Account currentUser = accountRepository.getById(id);
-
-        s3Service.deleteS3Bucket(currentUser.getUserRole().toString(), currentUser.getId(), currentUser.getUuid());
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
-    }
-
-    //TODO: DELETE TEST METHODS ABOVE
 
 }
