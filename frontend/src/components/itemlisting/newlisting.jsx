@@ -3,6 +3,8 @@ import cookie from "js-cookie";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
+import { Dropdown, Selection } from 'react-dropdown-now';
+import 'react-dropdown-now/style.css';
 
 export default function Component() {
   var navigate = useNavigate();
@@ -17,18 +19,30 @@ export default function Component() {
   });
 
   var {listingTitle, price, itemCondition, description } = formData;
-
   var [user, setUser] = useState({});
+
+
+  // Part of drop down menu for item condition
+  let itemConditions = [
+    { label: "BRAND NEW", value: "BRAND_NEW" },
+    { label: "OPENED", value: "OPENED" },
+    { label: "USED", value: "USED" },
+    {label: "DAMAGED", value: "DAMAGED"},
+    {label: "BROKEN", value: "BROKEN"}
+  ]
+
+  let [itemConditionDropDown, setItemConditionDropDown] = useState("Select item condition️")
+
+  let handleItemConditionChange = (e) => {
+    setItemConditionDropDown(e.target.value)
+    itemCondition = e.target.value;
+  }
 
 
   useEffect(() => {
     if (cookie.get("user")) {
       user = JSON.parse(cookie.get("user"));
       setUser(user);
-
-      console.log("Get cookie" + cookie.get("user"));
-      console.log("Current user" + user.id);
-
     } else {
       navigate("/signin");
     }
@@ -59,70 +73,44 @@ export default function Component() {
     // setImageFile(event.target.files[0]);
   }
 
+  console.log("Form data" + JSON.stringify(formData));
+
   async function formSubmit(event) {
     event.preventDefault();
     try {
-      setFormData({ ...formData});
-
-      console.log(
-          JSON.stringify("userid before 1st post" + user.id)
-      );
+      console.log("Form data" + JSON.stringify(formData));
 
       // Create listing
       var res1 = await axios.post(
         getGlobalState("backendDomain") + "/api/itemListings/newItemListing/" + user.id,
-        formData
-      );
+        formData);
 
       console.log(
         JSON.stringify("Response from posting new item listing" + res1.data)
       );
 
       // 2nd Post to upload image to S3
-      var res2 = await axios.post(
-        // addImageToListing/{listing ID}?userId={currentUserID}&filename={original name of the uploaded file}
-        getGlobalState("backendDomain") +
-          "/api/itemListings/addImageToListing/" +
-          res1.data +
-          "?userId=" +
-          user.id +
-          // user.id +
-          "&filename=" +
-          imageName,
-          imageFile
-      );
-
-      console.log(
-        "/api/itemListings/addImageToListing/" +
-          res1.data +
-          "?userId=" +
-          user.id +
-          "&filename=" +
-          imageName
-      );
+      if(imageFile !== null){
+        var res2 = await axios.post(
+            // addImageToListing/{listing ID}?userId={currentUserID}&filename={original name of the uploaded file}
+            getGlobalState("backendDomain") +
+            "/api/itemListings/addImageToListing/" +
+            res1.data +
+            "?userId=" +
+            user.id +
+            // user.id +
+            "&filename=" +
+            imageName,
+            imageFile
+        );
+      }
 
       // console.log(JSON.stringify(image.files[0]))
 
       navigate("/");
     } catch (resError) {
-      // setError(resError.response.data.error);
+      setError(resError.response.data.error);
     }
-  }
-
-  function itemCondition(event) {
-    event.preventDefault();
-    if (event.target.value === "BRAND_NEW") {
-      setFormData({ ...formData, itemCondition: "BRAND_NEW"});
-    } else if (event.target.value === "OPENED") {
-      setFormData({ ...formData, itemCondition: "OPENED"});
-    }else if (event.target.value === "USED") {
-      setFormData({ ...formData, itemCondition: "USED"});
-    }else if (event.target.value === "DAMAGED") {
-      setFormData({ ...formData, itemCondition: "DAMAGED"});
-    }else if (event.target.value === "BROKEN") {
-      setFormData({ ...formData, itemCondition: "BROKEN"});
-    }
-
   }
 
 
@@ -161,37 +149,17 @@ export default function Component() {
         />
       </div>
 
-      {/* TODO: Change to dropdown */}
+
       <div className="mb-6">
         <label className="block text-grey-darker text-sm font-bold mb-2">
           itemCondition
         </label>
-
-
-        <select
-            className="custom-select text-capitalize"
-            onChange={itemCondition}
-            value=""
-        >
-          <option hidden>{user.username}</option>
-          <option value="BRAND_NEW">Brand new</option>
-          <option value="OPENED">Opened</option>
-          <option value="USED">Used</option>
-          <option value="DAMAGED">Damaged</option>
-          <option value="BROKEN">Broken</option>
+        <select onChange={handleItemConditionChange}>
+          <option value="Select condition️"> -- Select your item's condition -- </option>
+          {
+            itemConditions.map((itemConditionDropDown) => <option value={itemConditionDropDown.value}>{itemConditionDropDown.label}</option>)
+          }
         </select>
-
-
-
-        {/*<input*/}
-        {/*  value={itemCondition}*/}
-        {/*  name="itemCondition"*/}
-        {/*  onChange={formInputs}*/}
-        {/*  className="shadow appearance-none border border-red rounded w-full py-2 px-3 text-grey-darker mb-3"*/}
-        {/*  type="text"*/}
-        {/*  placeholder="brand new? used?"*/}
-        {/*  required*/}
-        {/*/>*/}
       </div>
 
       <div className="mb-6">
