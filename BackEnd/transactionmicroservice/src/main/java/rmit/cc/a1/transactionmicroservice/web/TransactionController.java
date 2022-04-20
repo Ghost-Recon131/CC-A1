@@ -30,17 +30,17 @@ public class TransactionController {
     public static final String cancelURL = "http://localhost:8081/api/Transactions/cancel";
 
     // Create new transaction
+    // Log into sandbox account: https://www.sandbox.paypal.com/mep/dashboard
     @PostMapping(path = "/createPayment")
-    public String createNewTransaction(@ModelAttribute("order")Order order){
+    public String createNewTransaction(@RequestBody Order order){
         String redirectLink = "redirect:/";
         String PaymentID = null;
-
         try{
             Payment paypalPayment = paypalAPIService.createPayment(order, successURL, cancelURL);
             PaymentID = paypalPayment.getId();
             for(Links link:paypalPayment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {
-                    redirectLink = "redirect:"+link.getHref();
+                    redirectLink = "redirect:/"+link.getHref();
                 }
             }
         }catch (PayPalRESTException e) {
