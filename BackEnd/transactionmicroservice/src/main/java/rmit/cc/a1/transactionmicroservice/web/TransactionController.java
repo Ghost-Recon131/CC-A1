@@ -4,12 +4,16 @@ import com.paypal.api.payments.Links;
 import com.paypal.base.rest.PayPalRESTException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import rmit.cc.a1.transactionmicroservice.Transaction.model.Transactions;
 import rmit.cc.a1.transactionmicroservice.Transaction.requests.Order;
 import com.paypal.api.payments.Payment;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import rmit.cc.a1.transactionmicroservice.PayPal.service.PayPalAPIService;
 import rmit.cc.a1.transactionmicroservice.Transaction.services.TransactionService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -76,6 +80,20 @@ public class TransactionController {
             logger.error("Error processing payment on PayPal API", e);
         }
         return "redirect:/";
+    }
+
+    // Get list of purchases for a user
+    @GetMapping(path = "/getUserPurchases")
+    public List<Transactions> getUserPurchases(@RequestParam("userID") Long userID){
+        List<Transactions> userPurchases = new ArrayList<>();
+
+        try{
+            userPurchases = transactionService.getUserPurchases(userID);
+        }catch (Exception e){
+            logger.error("Error getting user purchases \n", e);
+        }
+
+        return userPurchases;
     }
 
     //TODO: TEMP PATHS

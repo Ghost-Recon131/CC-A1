@@ -20,6 +20,8 @@ public interface TransactionRepository extends JpaRepository<Transactions, Long>
 
     List<Transactions> getAllByStatus(Status status);
 
+    List<Transactions> getAllByBuyerID(Long id);
+
     Transactions getTransactionBySellerIDAndItemListingID(Long sellerID, Long itemListingID);
 
     Transactions getTransactionByBuyerIDAndAndItemListingID(Long buyerID, Long itemListingID);

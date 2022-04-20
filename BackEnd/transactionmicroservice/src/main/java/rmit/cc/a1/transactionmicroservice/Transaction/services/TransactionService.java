@@ -1,9 +1,11 @@
 package rmit.cc.a1.transactionmicroservice.Transaction.services;
 
+import com.paypal.api.payments.Transaction;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import rmit.cc.a1.transactionmicroservice.Transaction.model.Status;
 import rmit.cc.a1.transactionmicroservice.Transaction.model.Transactions;
 import rmit.cc.a1.transactionmicroservice.Transaction.repository.TransactionRepository;
@@ -11,6 +13,7 @@ import rmit.cc.a1.transactionmicroservice.Transaction.requests.Order;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -85,6 +88,14 @@ public class TransactionService {
         return dateToConvert.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
+    }
+
+    // Returns arraylist of successful user purchases
+    public List<Transactions> getUserPurchases(Long userID){
+        List<Transactions> userPurchases = transactionRepository.getAllByBuyerID(userID);
+        userPurchases.removeIf(transactions -> transactions.getStatus() != Status.COMPLETED);
+        
+        return userPurchases;
     }
 
     // Returns transaction by transaction id
