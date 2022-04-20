@@ -11,12 +11,13 @@ export default function Component() {
   var queryParams = new URLSearchParams(window.location.search);
   var id = queryParams.get("id");
   var [user, setUser] = useState({});
+  var [checkOutData, setCheckOutData] = useState({buyerID: "", sellerID: "", itemListingID: "", price: "", currency: "AUD"});
+  var [confirmDelete, setConfirmDelete] = useState(false);
 
-  // For PayPal checkout
-  var [formData, setFormData] = useState({ buyerID: "", sellerID: "", itemListingID: "", price: "", currency: "AUD"});
+  // // For PayPal checkout
+  // var [formData, setFormData] = useState({ buyerID: "", sellerID: "", itemListingID: "", price: "", currency: "AUD"});
 
   useEffect(() => {
-    console.log("data " + formData);
 
     if (cookie.get("user")) {
       user = JSON.parse(cookie.get("user"));
@@ -46,6 +47,13 @@ export default function Component() {
   }, []);
 
 
+  // Set
+  function confirmDeleteListing(){
+    var confirm = true;
+    setConfirmDelete(confirm);
+  }
+
+
   // Function to delete a listing
   async function deleteListing(){
     await axios.delete(
@@ -60,15 +68,21 @@ export default function Component() {
 
 
   // axios POST for PayPal Checkout
-  async function checkOut(){
-    setFormData({ buyerID: user.id, sellerID: itemListing.sellerID, itemListingID: itemListing.id, price: itemListing.price, currency: "AUD"});
+  function checkOut(){
+
+    // Existing data
+    // console.log("itemListing object data: " + JSON.stringify(itemListing));
+    // console.log("Get via itemListing.id: " + itemListing.id);
+    // console.log("Get seller ID via itemListing: " + itemListing.accountId);
+
+    setCheckOutData({...checkOutData, buyerID: user.id, sellerID: itemListing.accountId, itemListingID: itemListing.id, price: itemListing.price, currency: "AUD"});
+    console.log("Purchase form Current listing id: " + JSON.stringify(checkOutData));
 
     // Axios POST
-    var status = await axios.post(
-        getGlobalState("backendDomain2") + "/api/Transactions/createPayment", formData);
+    // var status = await axios.post(getGlobalState("backendDomain2") + "/api/Transactions/createPayment", checkOutData);
 
     // go to success or fail page
-    navigate("/" + status);
+    // navigate("/" + status);
   }
 
   return (
@@ -78,25 +92,40 @@ export default function Component() {
       Description: {itemListing.description} <br />${itemListing.price} <br />
       {images.map((image,index) => (
         <div>
-          <img src={image} width="10%" height=""></img>
+          <img src={image} width="15%" height=""></img>
         </div>
       ))}
 
-      {/*TODO: Check userid against itemListing account id*/}
-      {user.id ? (
 
+       {/*If: logged-in user == creator of item listing, show below*/}
+      {user.id === itemListing.accountId? (
               <div>
                 <button className="text-yellow-400" onClick={() => navigate("/editListing?" + itemListing.id)}>Edit Listing</button>
                 <p className="text-orange-600">Warning! Deleting process is permanent!</p>
-                <button className="text-red-600 font-bold" onClick={() => deleteListing()}>Delete Listing</button>
+                <br></br>
+                <button className="text-red-600 font-bold" onClick={() => confirmDeleteListing()}>Delete Listing</button>
+
+                {/* If: logged-in user == creator of item listing and confirmed to delete account */}
+                {confirmDelete === true? (
+                    <div>
+                      <button className="text-red-600 font-bold" onClick={() => deleteListing()}>CONFIRM DELETE</button>
+                    </div>
+                ): (<div className="text-yellow-500 font-bold"></div>)
+                }
               </div>
-          ):
-          (
-              <div>
-                <button className="text-green-600" onClick={() => checkOut()}>Delete Listing</button>
-              </div>
-          )
+
+          ): (<div className="text-yellow-500 font-bold"></div>)
       }
+
+
+      {/*Checks that a user ID is present*/}
+      {user.id != null && user.id !== itemListing.accountId? (
+              <div>
+                <button className="text-green-400 font-bold" onClick={() => checkOut()}>Purchase item</button>
+              </div>
+          ): (<div></div>)
+      }
+
     </div>
   ); // part of return bracket
 }
