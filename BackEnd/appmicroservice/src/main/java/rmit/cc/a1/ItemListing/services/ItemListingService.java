@@ -11,6 +11,7 @@ import rmit.cc.a1.ItemListing.model.ItemImages;
 import rmit.cc.a1.ItemListing.model.ItemListing;
 import rmit.cc.a1.ItemListing.repository.ItemImagesRepository;
 import rmit.cc.a1.ItemListing.repository.ItemListingRepository;
+import rmit.cc.a1.ItemListing.requests.ModifyItemListingRequest;
 import rmit.cc.a1.ItemListing.requests.NewItemListingRequest;
 import rmit.cc.a1.utils.ItemCondition;
 
@@ -37,9 +38,8 @@ public class ItemListingService {
     }
 
     // Allows users to update their listing
-    public void updateItemListingDetails(Long id, NewItemListingRequest request){
+    public void updateItemListingDetails(Long id, ModifyItemListingRequest request){
         ItemListing toUpdate = itemListingRepository.getById(id);
-        ItemCondition condition = ItemCondition.valueOf(request.getItemCondition());
 
         if(request.getListingTitle() != null){
             toUpdate.setListingTitle(request.getListingTitle());
@@ -49,14 +49,11 @@ public class ItemListingService {
             toUpdate.setPrice(request.getPrice());
         }
 
-        if(request.getItemCondition() != null){
-            toUpdate.setItemCondition(condition);
-        }
-
         if(request.getDescription() != null){
             toUpdate.setDescription(request.getDescription());
         }
 
+        itemListingRepository.save(toUpdate);
     }
 
     public ItemListing newItemListing(Long userID, NewItemListingRequest listingRequest, Integer tmpListingID) {
