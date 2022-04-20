@@ -13,6 +13,8 @@ export default function Component() {
       navigate("/newlisting");
     }else if (event.target.value === "viewAccountInfo") {
       navigate("/viewAccountInfo");
+    }else if (event.target.value === "viewtransactions") {
+      navigate("/viewtransactions");
     }
 
   }
@@ -43,6 +45,7 @@ export default function Component() {
               <option hidden>{user.username}</option>
               <option value="newListing">New Listing</option>
               <option value="viewAccountInfo">View Account info</option>
+              <option value="viewtransactions">View purchases</option>
               <option value="signOut">Sign Out</option>
             </select>
           </div>
