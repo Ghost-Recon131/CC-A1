@@ -3,8 +3,6 @@ import cookie from "js-cookie";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
-import { Dropdown, Selection } from 'react-dropdown-now';
-import 'react-dropdown-now/style.css';
 
 export default function Component() {
   var navigate = useNavigate();

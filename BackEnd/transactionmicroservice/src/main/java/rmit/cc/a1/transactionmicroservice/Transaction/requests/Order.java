@@ -15,4 +15,6 @@ public class Order {
     private Long itemListingID;
     private Double price;
     private String currency;
+    private String successURL;
+    private String cancelURL;
 }

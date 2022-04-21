@@ -12,7 +12,6 @@ export default function Component() {
   var id = queryParams.get("id");
   var [user, setUser] = useState({});
   var [confirmDelete, setConfirmDelete] = useState(false);
-  const [confirmPurchase, setConfirmPurchase] = useState(false);
 
 
   useEffect(() => {
@@ -66,28 +65,27 @@ export default function Component() {
   }
 
 
-  // Sets the checkout data for paypal
-  function setData(){
-    var confirm = true;
-    setConfirmPurchase(confirm);
-  }
-
   // axios POST for PayPal Checkout
   async function checkOut() {
+    const domain = window.location.host;
+
+    // axios post
     const bodyParameters = {
       buyerID: user.id,
       sellerID: itemListing.accountId,
       itemListingID: itemListing.id,
       price: itemListing.price,
-      currency: "AUD"
+      currency: "AUD",
+      successURL: domain + "/transactionsuccess",
+      cancelURL: domain + "/transactionfail"
     };
 
-
     var status = await axios.post(getGlobalState("backendDomain2") + "/api/Transactions/createPayment", bodyParameters);
-    console.log("returned status " + JSON.stringify(status));
 
-    // go to success or fail page
-    navigate(status)
+    console.log("POST Response: " + JSON.stringify(status))
+    console.log("redirect link: " + JSON.stringify(status.data))
+
+    window.open(status.data, '_blank');
   }
 
   return (
@@ -126,13 +124,7 @@ export default function Component() {
         {/*Checks that a user ID is present*/}
         {user.id != null && user.id !== itemListing.accountId? (
             <div>
-              <button className="text-green-400 font-bold" onClick={setData} >Purchase item</button>
-              {confirmPurchase === true? (
-                  <div>
-                    <button className="text-blue-400 font-bold" onClick={() => checkOut()}>PayPal Checkout</button>
-                  </div>
-              ): (<div className="text-yellow-500 font-bold"></div>)
-              }
+              <button className="text-blue-400 font-bold" onClick={() => checkOut()}>PayPal Checkout</button>
             </div>
         ): (<div></div>)
         }

@@ -53,9 +53,9 @@ public class TransactionService {
     }
 
     // Sets the status to COMPLETED
-    public void confirmTransaction(String paypalPayID){
+    public void confirmTransaction(String token){
         try{
-            Transactions toConfirm = transactionRepository.getByPaypalPayID(paypalPayID);
+            Transactions toConfirm = transactionRepository.getByPaypalToken(token);
             assert toConfirm != null;
             toConfirm.setStatus(Status.COMPLETED);
             transactionRepository.save(toConfirm);

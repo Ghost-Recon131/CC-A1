@@ -26,21 +26,19 @@ public class TransactionController {
 
     private PayPalAPIService paypalAPIService;
 
-    public static final String successURL = "http://localhost:8081/api/Transactions/success";
-    public static final String cancelURL = "http://localhost:8081/api/Transactions/cancel";
-
     // Create new transaction
     // Log into sandbox account: https://www.sandbox.paypal.com/mep/dashboard
     @PostMapping(path = "/createPayment")
     public String createNewTransaction(@RequestBody Order order){
-        String redirectLink = "redirect:/";
+        String redirectLink = null;
         String PaymentID = null;
         try{
-            Payment paypalPayment = paypalAPIService.createPayment(order, successURL, cancelURL);
+            Payment paypalPayment = paypalAPIService.createPayment(order, "http://" + order.getSuccessURL(), "http://" + order.getCancelURL());
+
             PaymentID = paypalPayment.getId();
             for(Links link:paypalPayment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {
-                    redirectLink = "redirect:/"+link.getHref();
+                    redirectLink = link.getHref();
                 }
             }
         }catch (PayPalRESTException e) {
@@ -59,27 +57,21 @@ public class TransactionController {
     }
 
     //path = "/cancel",
-    @GetMapping(value = cancelURL)
+    @PutMapping(path = "/cancelPayment")
     public String cancelPay(@RequestParam("token") String token) {
         transactionService.cancelTransaction(token);
         return "Payment was cancelled";
     }
 
     //path = "/success",
-    @GetMapping(value = successURL)
-    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String PayerID) {
+    @PutMapping(path = "/successPayment")
+    public void successPay(@RequestParam("token") String token) {
         try {
-            Payment payment = paypalAPIService.confirmPayment(paymentId, PayerID);
-            if (payment.getState().equals("approved")) {
-                transactionService.confirmTransaction(PayerID);
-                return "success";
-            }else{
-                transactionService.failTransaction();
-            }
-        }catch (PayPalRESTException e) {
+            transactionService.confirmTransaction(token);
+            transactionService.failTransaction();
+            } catch (Exception e) {
             logger.error("Error processing payment on PayPal API", e);
         }
-        return "redirect:/";
     }
 
     // Get list of purchases for a user
