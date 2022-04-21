@@ -88,28 +88,4 @@ public class TransactionController {
         return userPurchases;
     }
 
-    //TODO: TEMP PATHS
-    @RequestMapping("/success")
-    public String PayPalSuccess(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String PayerID) {
-        try {
-            Payment payment = paypalAPIService.confirmPayment(paymentId, PayerID);
-            if (payment.getState().equals("approved")) {
-                transactionService.confirmTransaction(paymentId);
-                return "success";
-            }else{
-                transactionService.failTransaction();
-            }
-        }catch (PayPalRESTException e) {
-            logger.error("Error processing payment on PayPal API", e);
-        }
-        return "Paypal Payment was successful";
-    }
-
-    @RequestMapping("/cancel")
-    public String PayPalCancel(@RequestParam("token") String token) {
-        transactionService.cancelTransaction(token);
-        return "Paypal Payment was canceled";
-    }
-    //TODO: Above are temp methods
-
 }

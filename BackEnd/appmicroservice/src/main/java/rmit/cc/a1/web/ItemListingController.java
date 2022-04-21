@@ -48,14 +48,6 @@ public class ItemListingController {
     // Checks item listing
     @PostMapping(path = "/newItemListing/{id}")
     public Long newItemListing(@PathVariable(value = "id") Long userID, @RequestBody NewItemListingRequest listingRequest, BindingResult result){
-        //TODO: DEBUG CODE
-        System.err.println("ID from frontend " + userID);
-        System.err.println("getListingTitle " + listingRequest.getListingTitle());
-        System.err.println("price " + listingRequest.getPrice());
-        System.err.println("itemCondition " + listingRequest.getItemCondition());
-        System.err.println("description " + listingRequest.getDescription());
-        //TODO: DELETE DEBUG CODE
-
         Integer tmpListingID = new Random().nextInt(10000);
         ItemListing newItemListing = itemListingService.newItemListing(userID, listingRequest, tmpListingID);
 
@@ -70,8 +62,7 @@ public class ItemListingController {
             return null;
         }
 
-        //here
-        itemListingService.createS3BucketForUser(2L);
+        itemListingService.createS3BucketForUser(userID);
 
         return itemListingService.getNewListingID(tmpListingID);
     }
