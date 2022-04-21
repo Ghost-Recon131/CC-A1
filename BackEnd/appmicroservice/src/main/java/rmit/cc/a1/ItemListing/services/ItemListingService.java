@@ -100,8 +100,9 @@ public class ItemListingService {
         // Delete all images and the then the listing
         for (ItemImages images : allImages) {
             if(images.getImageLink() != null){
-                s3Service.deleteImage(accountRepository.getById(userID).getUserRole().toString(), userID, images.getImageLink());
+                s3Service.deleteImage(accountRepository.getById(userID), userID, images.getImageLink());
                 itemImagesRepository.deleteById(images.getId());
+            }else if(images.getImageLink() == null){
                 itemListingRepository.deleteById(listingID);
             }
         }

@@ -75,15 +75,17 @@ public class S3Service {
     }
 
     // Delete image from S3
-    public void deleteImage(String role, Long userID, String key){
-        String bucketName = role + "-" + userID;
-        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder().bucket(bucketName).key(key).build();
+    public void deleteImage(Account currentUser, Long userID, String key){
+
+        String s3BucketName = currentUser.getUserRole().toString().toLowerCase() + "-" + currentUser.getId() + "-" + currentUser.getUuid();
+
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder().bucket(s3BucketName).key(key).build();
 
         try{
             amazonS3.deleteObject(deleteObjectRequest);
         } catch (Exception e){
             logger.info("Failed to delete object \n" + e);
-            System.err.println("Bucket already exists! \n" + e);
+            System.err.println("Failed to delete object! \n" + e);
         }
 
     }
