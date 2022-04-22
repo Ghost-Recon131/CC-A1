@@ -52,7 +52,7 @@ public class AccountService implements UserDetailsService {
     public void changeForgottenPassword(String username, ResetPasswordRequest request){
         String newPassword = request.getNewPassword();
 
-        Account account = accountRepository.findByUsername(username);
+        Account account = accountRepository.findByUsername(request.getUsername());
         account.setPassword(bCryptPasswordEncoder.encode(newPassword));
         accountRepository.save(account);
 
