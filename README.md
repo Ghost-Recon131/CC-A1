@@ -22,5 +22,5 @@ docker run -it -p  externalPort:dockerPort imageName
 |----------|------------------|--------------------------------|-------------------|------------------------------------|----------------------|
 | 1        | Tom Black        | tomblack@gmail.com             | password          | What is the name of your first dog | Ella                 |
 | 2        | John Doe         | johndoe@gmail.com              | password          | What is your favorite fruit        | Apple                |                                     
-| 3        | Lavina Woodward  | lavinawoodward@protonmail.com  | lavinawoodward123 | What is your favorite song         | Irony                |
+| 3        | Lavina Woodward  | lavinawoodward@protonmail.com  | lavinawoodward123 | What is your favourite song        | Irony                |
 | 4        |                  |                                |                   |                                    |                      |

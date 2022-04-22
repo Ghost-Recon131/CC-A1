@@ -17,7 +17,7 @@ API Gateway API endpoints
 | POST   | http://ec2-23-20-223-11.compute-1.amazonaws.com:8080/api/RegisterLogin/resetforgottenpassword | https://0xq8werjoh.execute-api.us-east-1.amazonaws.com/live/RegisterLogin/resetforgottenpassword  |
 
 
-## AccountInfoController - Bugged
+## AccountInfoController
 | METHOD | Spring Boot endpoint                                                                   | API Gateway Endpoint                                                                                  |
 |--------|----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
 | POST   | http://ec2-23-20-223-11.compute-1.amazonaws.com:8080/api/AccountInfo/updateAccountInfo | https://bjge6rs3se.execute-api.us-east-1.amazonaws.com/AccountInfo/api/AccountInfo/getAccountInfo     |
