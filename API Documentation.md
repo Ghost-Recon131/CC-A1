@@ -35,7 +35,13 @@ API Gateway API endpoints
 | PUT       | http://ec2-23-20-223-11.compute-1.amazonaws.com:8080/api/itemListings/modifyItemListing/{id}    | https://ji1fy3w7p2.execute-api.us-east-1.amazonaws.com/item-listing/api/modifyItemListing/{id}    |
 | DELETE    | http://ec2-23-20-223-11.compute-1.amazonaws.com:8080/api/itemListings/deleteItemListing/{id}    | https://ji1fy3w7p2.execute-api.us-east-1.amazonaws.com/item-listing/api/deleteItemListing/{id}    |
 
-## TransactionController
 
+## TransactionController
+| METHOD | Spring Boot endpoint                                                                    | API Gateway Endpoint                                                                                  |
+|--------|-----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| POST   | http://ec2-23-20-223-11.compute-1.amazonaws.com:8081/api/Transactions/createPayment     | https://i5lunowrqh.execute-api.us-east-1.amazonaws.com/transactions/api/Transactions/createPayment    |
+| PUT    | http://ec2-23-20-223-11.compute-1.amazonaws.com:8081/api/Transactions/cancelPayment     | https://i5lunowrqh.execute-api.us-east-1.amazonaws.com/transactions/api/Transactions/cancelPayment    |
+| PUT    | http://ec2-23-20-223-11.compute-1.amazonaws.com:8081/api/Transactions/successPayment    | https://i5lunowrqh.execute-api.us-east-1.amazonaws.com/transactions/api/Transactions/successPayment   |
+| GET    | http://ec2-23-20-223-11.compute-1.amazonaws.com:8081/api/Transactions/getUserPurchases  | https://i5lunowrqh.execute-api.us-east-1.amazonaws.com/transactions/api/Transactions/getUserPurchases |
 
 
