@@ -2,10 +2,10 @@
 API Gateway API endpoints
 
 
-### Backend
+### Backend (Cannot load in webpage directly - must contact endpoints)
 - Localhost: http://localhost:8080/
 - AWS EC2 (appmicroservice): http://ec2-23-20-223-11.compute-1.amazonaws.com:8080
-- AWS EC2 (transactionmicroservice): http://ec2-23-20-223-11.compute-1.amazonaws.com:8081
+- AWS EC2 (transactionmicroservice): http://ec2-54-210-236-149.compute-1.amazonaws.com:8081
 
 
 # Account
@@ -37,11 +37,10 @@ API Gateway API endpoints
 
 
 ## TransactionController
-| METHOD | Spring Boot endpoint                                                                    | API Gateway Endpoint                                                                                  |
-|--------|-----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
-| POST   | http://ec2-23-20-223-11.compute-1.amazonaws.com:8081/api/Transactions/createPayment     | https://i5lunowrqh.execute-api.us-east-1.amazonaws.com/transactions/api/Transactions/createPayment    |
-| PUT    | http://ec2-23-20-223-11.compute-1.amazonaws.com:8081/api/Transactions/cancelPayment     | https://i5lunowrqh.execute-api.us-east-1.amazonaws.com/transactions/api/Transactions/cancelPayment    |
-| PUT    | http://ec2-23-20-223-11.compute-1.amazonaws.com:8081/api/Transactions/successPayment    | https://i5lunowrqh.execute-api.us-east-1.amazonaws.com/transactions/api/Transactions/successPayment   |
-| GET    | http://ec2-23-20-223-11.compute-1.amazonaws.com:8081/api/Transactions/getUserPurchases  | https://i5lunowrqh.execute-api.us-east-1.amazonaws.com/transactions/api/Transactions/getUserPurchases |
-
+| METHOD | Spring Boot endpoint                                                                  | API Gateway Endpoint                                                                                  |
+|--------|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| POST   | http://ec2-54-210-236-149.compute-1.amazonaws.com:8081/api/Transactions/createPayment    | https://i5lunowrqh.execute-api.us-east-1.amazonaws.com/transactions/api/Transactions/createPayment    |
+| PUT    | http://ec2-54-210-236-149.compute-1.amazonaws.com:8081/api/Transactions/cancelPayment    | https://i5lunowrqh.execute-api.us-east-1.amazonaws.com/transactions/api/Transactions/cancelPayment    |
+| PUT    | http://ec2-54-210-236-149.compute-1.amazonaws.com:8081/api/Transactions/successPayment   | https://i5lunowrqh.execute-api.us-east-1.amazonaws.com/transactions/api/Transactions/successPayment   |
+| GET    | http://ec2-54-210-236-149.compute-1.amazonaws.com:8081/api/Transactions/getUserPurchases | https://i5lunowrqh.execute-api.us-east-1.amazonaws.com/transactions/api/Transactions/getUserPurchases |
 
